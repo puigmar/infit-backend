@@ -14,14 +14,18 @@ const coachSchema = new Schema({
     type: String,
     enum: ['male', 'female', 'other']
   },
-  adress: String,
+  address: String,
   avatarUrl: String,
-  banckAccount: String,
+  bankAccount: String,
   profileDescription: String,
   certificates: [{
     name: String,
     certificateNumber: String
   }],
+  availability: {
+    min: Number,
+    max: Number
+  },
   yearsExperience: Number,
   experience: String
 }, {

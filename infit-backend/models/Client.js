@@ -25,11 +25,14 @@ const clientSchema = new Schema({
     sportFrecuency: String,
     objective: String,
     trainningDays: [String],
+    availability: {
+      min: Number,
+      max: Number
+    },
     pack: {
       name: String,
       duration: Number,
       price: Number,
-      weekSessions: Number
     }
   },
   sexPreference: {
