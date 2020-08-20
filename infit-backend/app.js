@@ -10,7 +10,8 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const cors = require("cors");
 
-const auth = require("./routes/auth");
+const client = require("./routes/client");
+const coach = require("./routes/coach");
 
 // MONGOOSE CONNECTION
 mongoose
@@ -57,7 +58,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTER MIDDLEWARE
-app.use("/auth", auth);
+app.use("/client/auth", client);
+
+app.use("/coach/auth", coach);
 
 // ERROR HANDLING
 // catch 404 and forward to error handler
