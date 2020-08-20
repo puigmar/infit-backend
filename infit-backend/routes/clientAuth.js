@@ -72,20 +72,45 @@ router.post('/logout', isLoggedIn(), (req, res, next) => {
   return;
 });
 
-router.post('/meeting', async (req, res, next) => {
+router.post('/meeting', async (req, res, next) => {});
 
-});
-
-router.post('meeting-room/:roomid', (req, res, next) => {
+router.post('/meeting-room/:roomid', (req, res, next) => {
   // se crea el modelo de wizard
-
 });
 
-router.put('meeting-room/:roomid', (req, res, next) => {
-  
+router.put('/meeting-room/:roomid', (req, res, next) => {
   // update del modelo program referencia del usuario loggeado
-  //habrá que cambiar la fecha de inicio del programa 
+  // program.objective / program.pack.duration = 
+  // habrá que cambiar la fecha de inicio del programa
+  // Crear registro en Meeting
+  // Crear o actualizar registro en ScheduleDay
+  // Si no existe la hour de availability que viene de Meeting.date, push en availability
+  // Añadir push en ScheduleDay.meetingID con el dato de Meeting._id
 });
+
+router.post('/session/next', (req, res, next ) => {
+  // Toma del Modelo Session segun el ID del cliente, la sesión más cercana en date a la fecha actual
+  // -> devuelve un objeto de session
+  //
+})
+
+router.post('/session/:id', (req, res, next ) => {
+  // devuelve info del sesión
+})
+
+router.post('/session/:id/blocks', (req, res, next ) => {
+  // devuelve info del sesión y delñ bloque
+})
+
+router.post('/session/block/:id/exercises', (req, res, next ) => {
+  // devuelve info del sesión y delñ bloque
+})
+
+router.post('/session/exercise/:id', (req, res, next ) => {
+  // devuelve info del asesión y delñ bloque
+})
+
+
 
 
 

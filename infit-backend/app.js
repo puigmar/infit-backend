@@ -1,17 +1,17 @@
-require("dotenv").config();
+require('dotenv').config();
 
-const express = require("express");
-const path = require("path");
-const logger = require("morgan");
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
-const cors = require("cors");
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const cors = require('cors');
 
-const client = require("./routes/client");
-const coach = require("./routes/coach");
+const client = require('./routes/client');
+const coach = require('./routes/coach');
 
 // MONGOOSE CONNECTION
 mongoose
@@ -51,30 +51,30 @@ app.use(
 );
 
 // MIDDLEWARE
-app.use(logger("dev"));
+app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ROUTER MIDDLEWARE
-app.use("/client/auth", client);
+app.use('/client/auth', client);
 
-app.use("/coach/auth", coach);
+app.use('/coach/auth', coach);
 
 // ERROR HANDLING
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  res.status(404).json({ code: "not found" });
+  res.status(404).json({ code: 'not found' });
 });
 
 app.use((err, req, res, next) => {
   // always log the error
-  console.error("ERROR", req.method, req.path, err);
+  console.error('ERROR', req.method, req.path, err);
 
   // only render if the error ocurred before sending the response
   if (!res.headersSent) {
-    const statusError = err.status || "500";
+    const statusError = err.status || '500';
     res.status(statusError).json(err);
   }
 });
