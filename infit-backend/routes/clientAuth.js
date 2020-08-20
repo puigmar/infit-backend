@@ -29,7 +29,7 @@ router.post('/signup',
                 const salt = bcrypt.genSaltSync(saltRounds)
                 const hashPass = bcrypt.hashSync(password, salt)
 
-                const newUser = await User.create({ username, password: hashPass})
+                const newUser = await User.create({ username, password: hashPass, isCoach: false})
 
                 req.session.currentUser = newUser;
                 res.status(200).json(newUser)

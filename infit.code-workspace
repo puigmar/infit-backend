@@ -2,9 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "../w8-Day1/react-auth/auth-server-done"
 		}
 	],
 	"settings": {}
