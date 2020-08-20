@@ -6,7 +6,7 @@ const meetingSchema = new Schema({
   clientID: { type: Schema.Types.ObjectId, ref: "User" },
   coachID: { type: Schema.Types.ObjectId, ref: "Coach" },
   roomID: String,
-  date: String,
+  date: Date,
   url: String
 }, {
   timestamps: {
