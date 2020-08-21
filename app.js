@@ -10,10 +10,11 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const cors = require('cors');
 
-const client = require('./routes/client');
-const coach = require('./routes/coach');
+const client = require('./routes/clientAuth');
+const coach = require('./routes/coachAuth');
 
 // MONGOOSE CONNECTION
+
 mongoose
   .connect(process.env.MONGODB_URI, {
     useUnifiedTopology: true,
