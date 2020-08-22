@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const exerciseSchema = new Schema({
-  blockID: { type: Schema.Types.ObjectId, ref: "Block" },
+  blocksID: [{ type: Schema.Types.ObjectId, ref: "Block" }],
+  coachID: { type: Schema.Types.ObjectId, ref: "Coach" },
   image: String,
   video: String,
   title: String,
