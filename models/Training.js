@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const sessionSchema = new Schema({
-  date: Date,
+const trainingSchema = new Schema({
+  date: {type: Date, default: Date.now()},
   clientID: { type: Schema.Types.ObjectId, ref: "User" },
   coachID: { type: Schema.Types.ObjectId, ref: "Coach" },
   programID: { type: Schema.Types.ObjectId, ref: "Program" },
   scheduleID: { type: Schema.Types.ObjectId, ref: "Schedule" },
-  sessionsID: [ { type: Schema.Types.ObjectId, ref: "Session" }],
   blockID: [ { type: Schema.Types.ObjectId, ref: "Block" }],
   title: String,
   notes: String
@@ -18,6 +17,6 @@ const sessionSchema = new Schema({
   },
 });
 
-const Session = mongoose.model('Session', sessionSchema);
+const Training = mongoose.model('Training', trainingSchema);
 
-module.exports = Session;
+module.exports = Training;

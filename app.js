@@ -60,7 +60,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ROUTER MIDDLEWARE
 app.use('/client/auth', client);
-
 app.use('/coach/auth', coach);
 
 // ERROR HANDLING

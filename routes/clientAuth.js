@@ -3,7 +3,9 @@ const router = express.Router();
 const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const User = require('../models/user');
+const Training = require('../models/Training');
+const User = require('../models/user.js');
+const session = require('express-session');
 
 // HELPER FUNCTIONS
 const {
@@ -17,7 +19,7 @@ router.post(
   isNotLoggedIn(),
   validationLoggin(),
   async (req, res, next) => {
-    const { username, password, ...rest } = req.body;
+    const { username, password } = req.body;
     
     try {
       const usernameExists = await User.findOne({ username }, 'username');
@@ -78,6 +80,17 @@ router.post('/user/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findById(id);
+    res.json(user)
+  } catch (error) {
+    console.log(error)
+  }
+});
+
+router.post('/user/training/:clientID', async(req, res, next) => {
+  try {
+    const { clientID } = req.params;
+    const user = await Training.find({clientID})
+    console.log('Estas en el servicio de training')
     res.json(user)
   } catch (error) {
     console.log(error)
