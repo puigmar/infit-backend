@@ -33,6 +33,7 @@ router.post(
         });
 
         req.session.currentUser = newUser;
+        console.log('newUser register', newUser)
         res.status(200).json(newUser);
       }
     } catch (err) {
