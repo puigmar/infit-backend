@@ -73,6 +73,17 @@ router.post('/logout', isLoggedIn(), (req, res, next) => {
   return;
 });
 
+// user
+router.post('/user/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    res.json(user)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 router.post('/meeting', async (req, res, next) => {});
 
 router.post('/meeting-room/:roomid', (req, res, next) => {
