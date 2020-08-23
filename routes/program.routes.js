@@ -1,22 +1,57 @@
+const express = require('express');
 const router = express.Router();
-const createError = require('http-errors');
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-const Program = require('../models/Programm.model');
+const Program = require('../models/Program.model');
 
+const uploadCloud = require('../configs/cloudinary-setup');
+
+// BLOCKS
+
+//CREATE
+router.post('/newProgram', async (req, res, next) => {
+  try {
+    const newProgram = await Program.create({ ...req.body });
+
+    res.status(200).json(newProgram);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+// UPDATE
 router.post(
-  '/newProgram',
+  '/:id/editProgram',
+  uploadCloud.single('programPicture'),
   async (req, res, next) => {
     try {
-      const newTraining = await Program.create({...req.body});
+      const { id } = req.params;
 
-      res.status(200).json(newTraining);
+      let programUpdate = {};
+
+      if (typeof req.file !== 'undefined') {
+        trainingUpdate['programPicture'] = req.file.url;
+      }
+
+      const programUpdated = await Block.updateOne(
+        { _id: id },
+        { $set: { ...programUpdate, ...req.body } },
+        { new: true }
+      );
+
+      res.status(200).json(programUpdated);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
 );
+// DELETE
+router.post('/:id/program', async (req, res, next) => {
+  try {
+    await Program.findByIdAndRemove({ _id: req.params.id });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
 
-module.exports=router;
-
+module.exports = router;

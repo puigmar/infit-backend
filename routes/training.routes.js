@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Training = require('../models/Training.model');
-const Coach = require('../models/Coach.model');
 
-const uploadCloud = require('../config/cloudinary.js');
+const uploadCloud = require('../configs/cloudinary-setup');
 
 const {
   isLoggedIn,
@@ -27,7 +26,7 @@ router.post('/newTraining', async (req, res, next) => {
 // UPDATE
 router.post(
   '/:id/editTraining',
-  uploadCloud.single('profilePicture'),
+  uploadCloud.single('trainingPicture'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -45,7 +44,9 @@ router.post(
       );
 
       res.status(200).json(trainingUpdated);
-    } catch (error) {}
+    } catch (error) {
+      next(error)
+    }
   }
 );
 
@@ -95,21 +96,6 @@ router.post('/client/:clientID', async (req, res, next) => {
     console.log(error);
     next(error);
   }
-});
-
-
-// EXERCISE
-
-//CREATE
-
-// READ
-
-// UPDATE
-
-// DELETE
-
-router.post('/training/exercise/:id', (req, res, next) => {
-  // devuelve info del atraining y del bloque
 });
 
 module.exports = router;

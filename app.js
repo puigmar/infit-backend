@@ -14,6 +14,8 @@ const generic = require('./routes/auth.routes');
 const client = require('./routes/clientAuth.routes');
 const coach = require('./routes/coachAuth.routes');
 const training = require('./routes/training.routes');
+const block = require('./routes/block.routes');
+const program = require('./routes/program.routes');
 
 // MONGOOSE CONNECTION
 mongoose
@@ -60,7 +62,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ROUTER MIDDLEWARE
+app.use('/program', program);
 app.use('/training', training);
+app.use('/block', block);
 app.use('/generic/auth', generic);
 app.use('/client/auth', client);
 app.use('/coach/auth', coach);
