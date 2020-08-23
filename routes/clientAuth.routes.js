@@ -3,9 +3,11 @@ const router = express.Router();
 const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const Training = require('../models/Training');
-const User = require('../models/user.js');
+const Training = require('../models/Training.model');
+const User = require('../models/User.model.js');
 const session = require('express-session');
+
+const uploader = require("../configs/cloudinary-setup");
 
 // HELPER FUNCTIONS
 const {
@@ -68,6 +70,16 @@ router.post(
     }
   }
 );
+
+router.post("/uploadPhotoAvatar", uploader.single("avatarUrl"), (req, res, next) => {
+
+  if (!req.file) {
+    next(new Error("No file uploaded!"));
+    return;
+  }
+  
+  res.json({ avatar_url: req.file.secure_url});
+});
 
 router.post('/logout', isLoggedIn(), (req, res, next) => {
   req.session.destroy();

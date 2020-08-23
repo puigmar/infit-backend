@@ -10,6 +10,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const cors = require('cors');
 
+const generic = require('./routes/auth');
 const client = require('./routes/clientAuth');
 const coach = require('./routes/coachAuth');
 
@@ -59,6 +60,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ROUTER MIDDLEWARE
+app.use('/generic/auth', generic);
 app.use('/client/auth', client);
 app.use('/coach/auth', coach);
 
