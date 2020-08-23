@@ -4,6 +4,7 @@ const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const User = require('../models/User.model');
+const Coach = require('../models/Coach.model')
 
 // HELPER FUNCTIONS
 const {
@@ -11,6 +12,7 @@ const {
   isNotLoggedIn,
   validationLoggin,
 } = require('../helpers/middlewares');
+const { find } = require('../models/User.model');
 
 router.post(
   '/signup',
@@ -34,8 +36,13 @@ router.post(
           isCoach: true,
         });
 
-        req.session.currentUser = newUser;
+        const thisUser = await User.findOne({ username }, 'username');
+
+        const newCoach = await Coach.create(thisUser._id)
+
+        req.session.currentUser = thisUser;
         res.status(200).json(newUser);
+        res.status(200).json(newCoach);
       }
     } catch (err) {
       next(err);
