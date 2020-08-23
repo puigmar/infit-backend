@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const User = require('../models/user');
 
+const uploader = require("../configs/cloudinary-setup");
+
 // HELPER FUNCTIONS
 const {
   isLoggedIn,
@@ -66,6 +68,16 @@ router.post(
     }
   }
 );
+
+router.post("/uploadPhotoAvatar", uploader.single("avatarUrl"), (req, res, next) => {
+
+  if (!req.file) {
+    next(new Error("No file uploaded!"));
+    return;
+  }
+  
+  res.json({ avatar_url: req.file.secure_url});
+});
 
 router.post('/logout', isLoggedIn(), (req, res, next) => {
   req.session.destroy();

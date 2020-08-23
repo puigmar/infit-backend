@@ -5,7 +5,9 @@ const User = require('../models/user');
 router.post('/checkExistUser', async (req, res, next) => {
   try{
     const { username } = req.body;
-    const isUser = await User.findOne({username});
+    console.log(username);
+    const isUser = await User.findOne({username: username});
+    console.log(isUser)
     res.json(isUser);
   }
   catch(error){
