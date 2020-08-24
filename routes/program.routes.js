@@ -4,8 +4,6 @@ const Program = require('../models/Program.model');
 
 const uploadCloud = require('../configs/cloudinary-setup');
 
-// BLOCKS
-
 //CREATE
 router.post('/newProgram', async (req, res, next) => {
   try {
@@ -20,7 +18,7 @@ router.post('/newProgram', async (req, res, next) => {
 
 // UPDATE
 router.post(
-  '/:id/editProgram',
+  '/editProgram/:id',
   uploadCloud.single('programPicture'),
   async (req, res, next) => {
     try {
@@ -32,7 +30,7 @@ router.post(
         trainingUpdate['programPicture'] = req.file.url;
       }
 
-      const programUpdated = await Block.updateOne(
+      const programUpdated = await Program.updateOne(
         { _id: id },
         { $set: { ...programUpdate, ...req.body } },
         { new: true }
@@ -44,14 +42,27 @@ router.post(
     }
   }
 );
-// DELETE
-router.post('/:id/program', async (req, res, next) => {
+router.post('/:id', async (req, res, next) => {
   try {
-    await Program.findByIdAndRemove({ _id: req.params.id });
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
+    const { id } = req.params;
+    console.log('este es el id: ', id);
+    const program = await Program.findById(id);
+    res.status(200).json(program);
+  } catch (error) {}
 });
+
+router.post('/editCoach', (req, res, next) => {
+  
+})
+
+// DELETE
+// router.post('/:id/program', async (req, res, next) => {
+//   try {
+//     await Program.findByIdAndRemove({ _id: req.params.id });
+//   } catch (error) {
+//     console.log(error);
+//     next(error);
+//   }
+// });
 
 module.exports = router;

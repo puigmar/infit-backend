@@ -1,20 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const Training = require('../models/Training.model');
+const Coach = require('../models/Coach.model');
 
 const uploadCloud = require('../configs/cloudinary-setup');
 
-const {
-  isLoggedIn,
-  isNotLoggedIn,
-  validationLoggin,
-} = require('../helpers/middlewares');
-
 //CREATE
-
 router.post('/newTraining', async (req, res, next) => {
   try {
     const newTraining = await Training.create({ ...req.body });
+
+    if(newTraining){
+      await Coach.updateOne(
+        {_id: newTraining.coachID},
+        {$push: { trainings: newTraining._id }},
+        {new: true})
+    }
 
     res.status(200).json(newTraining);
   } catch (error) {
@@ -25,7 +26,7 @@ router.post('/newTraining', async (req, res, next) => {
 
 // UPDATE
 router.post(
-  '/:id/editTraining',
+  '/editTraining/:id',
   uploadCloud.single('trainingPicture'),
   async (req, res, next) => {
     try {
@@ -39,7 +40,7 @@ router.post(
 
       const trainingUpdated = await Training.updateOne(
         { _id: id },
-        { $set: { ...profileUpdate, ...req.body } },
+        { $set: { ...req.body } },
         { new: true}
       );
 
@@ -51,7 +52,7 @@ router.post(
 );
 
 // DELETE
-router.post('/:id/delete', async (req, res, next) => {
+router.post('/delete/:id', async (req, res, next) => {
   try {
     await Training.findByIdAndRemove({ _id: req.params.id });
   } catch (error) {

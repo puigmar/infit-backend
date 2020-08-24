@@ -1,21 +1,17 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const programmSchema = new Schema({
-  sessionsID: [ { type: Schema.Types.ObjectId, ref: "Session" }],
-  scheduleID: { type: Schema.Types.ObjectId, ref: "Schedule" },
-  clientID: { type: Schema.Types.ObjectId, ref: "User" },
+const programSchema = new Schema({
+  trainingID: [ { type: Schema.Types.ObjectId, ref: "Training" }],
+  clientID: { type: Schema.Types.ObjectId, ref: "Client" },
   coachID: { type: Schema.Types.ObjectId, ref: "Coach" },
+  picture: String,
   objective: String,
   pack: {
     name: String,
     duration: Number,
     price: Number,
     weekSessions: Number
-  },
-  isActive: {
-    type: Boolean,
-    default: false
   },
   initialDay: String,
 }, {
@@ -25,6 +21,6 @@ const programmSchema = new Schema({
   },
 });
 
-const Programm = mongoose.model('Programm', programmSchema);
+const Program = mongoose.model('Programm', programSchema);
 
-module.exports = Programm;
+module.exports = Program;
