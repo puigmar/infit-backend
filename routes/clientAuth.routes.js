@@ -3,7 +3,8 @@ const router = express.Router();
 const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const User = require('../models/user');
+const User = require('../models/User.model.js');
+const session = require('express-session');
 
 const uploader = require("../configs/cloudinary-setup");
 
@@ -19,7 +20,7 @@ router.post(
   isNotLoggedIn(),
   validationLoggin(),
   async (req, res, next) => {
-    const { username, password, ...rest } = req.body;
+    const { username, password } = req.body;
     
     try {
       const usernameExists = await User.findOne({ username }, 'username');
@@ -69,15 +70,19 @@ router.post(
   }
 );
 
-router.post("/uploadPhotoAvatar", uploader.single("avatarUrl"), (req, res, next) => {
+router.post(
+  '/uploadPhotoAvatar',
+  uploader.single('avatarUrl'),
+  (req, res, next) => {
 
-  if (!req.file) {
-    next(new Error("No file uploaded!"));
-    return;
+    if (!req.file) {
+      next(new Error('No file uploaded!'));
+      return;
+    }
+    
+    res.json({ avatar_url: req.file.secure_url});
   }
-  
-  res.json({ avatar_url: req.file.secure_url});
-});
+);
 
 router.post('/logout', isLoggedIn(), (req, res, next) => {
   req.session.destroy();
@@ -93,8 +98,11 @@ router.post('/user/:id', async (req, res, next) => {
     res.json(user)
   } catch (error) {
     console.log(error)
+    next(error);
   }
-})
+});
+
+
 
 router.post('/meeting', async (req, res, next) => {});
 
@@ -111,31 +119,5 @@ router.put('/meeting-room/:roomid', (req, res, next) => {
   // Si no existe la hour de availability que viene de Meeting.date, push en availability
   // Añadir push en ScheduleDay.meetingID con el dato de Meeting._id
 });
-
-router.post('/session/next', (req, res, next ) => {
-  // Toma del Modelo Session segun el ID del cliente, la sesión más cercana en date a la fecha actual
-  // -> devuelve un objeto de session
-  //
-})
-
-router.post('/session/:id', (req, res, next ) => {
-  // devuelve info del sesión
-})
-
-router.post('/session/:id/blocks', (req, res, next ) => {
-  // devuelve info del sesión y delñ bloque
-})
-
-router.post('/session/block/:id/exercises', (req, res, next ) => {
-  // devuelve info del sesión y delñ bloque
-})
-
-router.post('/session/exercise/:id', (req, res, next ) => {
-  // devuelve info del asesión y delñ bloque
-})
-
-
-
-
 
 module.exports = router;

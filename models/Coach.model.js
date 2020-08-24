@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 const coachSchema = new Schema(
   {
     coachID: { type: Schema.Types.ObjectId, ref: 'User' },
-    //sessions: [ { type: Schema.Types.ObjectId, ref: "Session" }],
     clients: [{ type: Schema.Types.ObjectId, ref: 'Client' }],
     avatarUrl: String,
     name: String,
@@ -42,4 +41,4 @@ const coachSchema = new Schema(
 
 const Coach = mongoose.model('Coach', coachSchema);
 
-module.exports = Client;
+module.exports = Coach;

@@ -2,8 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const blockSchema = new Schema({
-  sessionID: { type: Schema.Types.ObjectId, ref: "Session" },
-  exerciseID: { type: Schema.Types.ObjectId, ref: "Exercise" },
+
+  trainingID: [{ type: Schema.Types.ObjectId, ref: "Training" }],
+  exercises: [{ type: Schema.Types.ObjectId, ref: "Exercise" }],
   title: String
 }, {
   timestamps: {

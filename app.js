@@ -10,12 +10,15 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const cors = require('cors');
 
-const generic = require('./routes/auth');
-const client = require('./routes/clientAuth');
-const coach = require('./routes/coachAuth');
+const generic = require('./routes/auth.routes');
+const client = require('./routes/clientAuth.routes');
+const coach = require('./routes/coachAuth.routes');
+const training = require('./routes/training.routes');
+const block = require('./routes/block.routes');
+const program = require('./routes/program.routes');
+const exercise = require('./routes/exercise.routes');
 
 // MONGOOSE CONNECTION
-
 mongoose
   .connect(process.env.MONGODB_URI, {
     useUnifiedTopology: true,
@@ -60,6 +63,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ROUTER MIDDLEWARE
+app.use('/exercise', exercise);
+app.use('/program', program);
+app.use('/training', training);
+app.use('/block', block);
 app.use('/generic/auth', generic);
 app.use('/client/auth', client);
 app.use('/coach/auth', coach);

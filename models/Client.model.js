@@ -8,7 +8,6 @@ const clientSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    //sessions: [ { type: Schema.Types.ObjectId, ref: "Session" }],
     name: String,
     surname: String,
     card: String,
@@ -45,7 +44,7 @@ const clientSchema = new Schema(
       {
         title: String,
         url: String,
-        date: Date.now(),
+        date: { type: Date, default: Date.now() },
       },
     ],
     avatarUrl: String,
