@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Training = require('../models/Training.model');
 const Coach = require('../models/Coach.model');
+const Client = require('../models/Client.model');
+const Program = require('../models/Program.model');
 
 const uploadCloud = require('../configs/cloudinary-setup');
 
@@ -10,11 +12,14 @@ router.post('/newTraining', async (req, res, next) => {
   try {
     const newTraining = await Training.create({ ...req.body });
 
-    if(newTraining){
-      await Coach.updateOne(
-        {_id: newTraining.coachID},
-        {$push: { trainings: newTraining._id }},
-        {new: true})
+    if (newTraining) {
+
+      // add training to Program
+      await Program.updateOne(
+        { _id: newTraining.programID },
+        { $push: { trainings: newTraining._id } },
+        { new: true }
+      );
     }
 
     res.status(200).json(newTraining);
@@ -32,21 +37,21 @@ router.post(
     try {
       const { id } = req.params;
 
-      let trainingUpdate = {}
+      let trainingUpdate = {};
 
-      if(typeof req.file !== 'undefined'){
+      if (typeof req.file !== 'undefined') {
         trainingUpdate['trainingPicture'] = req.file.url;
       }
 
       const trainingUpdated = await Training.updateOne(
         { _id: id },
         { $set: { ...req.body } },
-        { new: true}
+        { new: true }
       );
 
       res.status(200).json(trainingUpdated);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 );
@@ -79,7 +84,7 @@ router.post('/:trainingid', async (req, res, next) => {
 router.post('/coach/:coachID', async (req, res, next) => {
   try {
     const { coachID } = req.params;
-    const trainings = await Training.findById(coachID);
+    const trainings = await Training.find({coachID});
     res.json(trainings);
   } catch (error) {
     console.log(error);
@@ -91,7 +96,7 @@ router.post('/coach/:coachID', async (req, res, next) => {
 router.post('/client/:clientID', async (req, res, next) => {
   try {
     const { clientID } = req.params;
-    const trainings = await Training.findById(clientID);
+    const trainings = await Training.findById({clientID});
     res.json(trainings);
   } catch (error) {
     console.log(error);

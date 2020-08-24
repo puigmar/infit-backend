@@ -27,12 +27,12 @@ router.post(
       let programUpdate = {};
 
       if (typeof req.file !== 'undefined') {
-        trainingUpdate['programPicture'] = req.file.url;
+        programUpdate['programPicture'] = req.file.url;
       }
 
       const programUpdated = await Program.updateOne(
         { _id: id },
-        { $set: { ...programUpdate, ...req.body } },
+        { $set: { ...req.body } },
         { new: true }
       );
 
@@ -42,27 +42,24 @@ router.post(
     }
   }
 );
+
+// DELETE
+router.post('/delete/:id', async (req, res, next) => {
+  try {
+    await Program.findByIdAndRemove({ _id: req.params.id });
+  } catch (error) {
+    console.log(error), next(error);
+  }
+});
+
+//CALLS
+//get program by programID
 router.post('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log('este es el id: ', id);
     const program = await Program.findById(id);
     res.status(200).json(program);
   } catch (error) {}
 });
-
-router.post('/editCoach', (req, res, next) => {
-  
-})
-
-// DELETE
-// router.post('/:id/program', async (req, res, next) => {
-//   try {
-//     await Program.findByIdAndRemove({ _id: req.params.id });
-//   } catch (error) {
-//     console.log(error);
-//     next(error);
-//   }
-// });
 
 module.exports = router;
