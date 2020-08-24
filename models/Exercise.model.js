@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 
 const exerciseSchema = new Schema(
   {
-    blocksID: [{ type: Schema.Types.ObjectId, ref: 'Block' }],
     coachID: { type: Schema.Types.ObjectId, ref: 'Coach' },
     image: String,
     video: String,

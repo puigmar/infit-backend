@@ -12,6 +12,15 @@ router.post('/newExercise', async (req, res, next) => {
   try {
     const newExercise = await Exercise.create({ ...req.body });
 
+    if (newExercise) {
+      // add exercise to block
+      await Block.updateOne(
+        { _id: newExercise.blockID },
+        { $push: { exercises: newExercise._id } },
+        { new: true }
+      );
+    }
+
     res.status(200).json(newExercise);
   } catch (error) {
     console.log(error);
@@ -21,7 +30,7 @@ router.post('/newExercise', async (req, res, next) => {
 
 // UPDATE
 router.post(
-  '/:id/editExercise',
+  '/editExercise/:id',
   uploadCloud.single('exercisePicture'),
   uploadCloud.single('exerciseVideo'),
   async (req, res, next) => {
@@ -37,7 +46,7 @@ router.post(
 
       const exerciseUpdated = await Exercise.updateOne(
         { _id: id },
-        { $set: { ...exerciseUpdate, ...req.body } },
+        { $set: { ...req.body } },
         { new: true }
       );
 
