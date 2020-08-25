@@ -4,6 +4,7 @@ const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const User = require('../models/User.model.js');
+const Client = require('../models/Client.model.js');
 const session = require('express-session');
 
 const uploader = require("../configs/cloudinary-setup");
@@ -20,8 +21,7 @@ router.post(
   isNotLoggedIn(),
   validationLoggin(),
   async (req, res, next) => {
-    const { username, password } = req.body;
-    
+    const { username, password, client } = req.body;
     try {
       const usernameExists = await User.findOne({ username }, 'username');
 
@@ -37,7 +37,23 @@ router.post(
 
         req.session.currentUser = newUser;
         console.log('newUser register', newUser)
-        res.status(200).json(newUser);
+
+        console.log('Nuevo Usuario ------>', newUser)
+        
+        if(newUser){
+          const newClient = await Client.create({...client});
+          console.log('Nuevo Cliente ------>', newClient)
+          if (!newClient) {
+            return next(createError(404))
+          } else {
+            req.session.currentUser = {
+              ...req.session.currentUser,
+              newClient
+            };
+          }
+          res.status(200).json(newUser);
+        }
+        
       }
     } catch (err) {
       next(err);
