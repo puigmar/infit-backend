@@ -53,7 +53,7 @@ router.post('/delete/:id', async (req, res, next) => {
 });
 
 //CALLS
-//get program by programID
+//get program by coachID
 router.post('/coach/:coachID', async (req, res, next) => {
   try {
     const { coachID } = req.params;
