@@ -79,6 +79,7 @@ router.post(
 
 router.post('/logout', isLoggedIn(), (req, res, next) => {
   req.session.destroy();
+  console.log('session --------->: ', req.session)
   res.status(204).send();
   return;
 });

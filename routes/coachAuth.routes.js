@@ -14,8 +14,13 @@ const {
 } = require('../helpers/middlewares');
 const { find } = require('../models/User.model');
 
-router.post('/signup', async (req, res, next) => {
-  const { username, password } = req.body;
+router.post(
+  '/signup',
+  isNotLoggedIn(),
+  validationLoggin(),
+  async (req, res, next) => {
+    const { username, password } = req.body;
+    
 
   try {
     const usernameExists = await User.findOne({ username }, 'username');
