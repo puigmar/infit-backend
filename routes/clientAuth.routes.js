@@ -34,7 +34,7 @@ router.post('/signup', async (req, res, next) => {
 
     const thisUser = await User.findOne({ username });
 
-    const newClient = await Client.create({clientID: newUser._id,...client});
+    const newClient = await Client.create({ clientID: thisUser._id });
 
     req.session.currentUser = newUser;
     res.status(200).json(newUser);
@@ -79,7 +79,7 @@ router.post(
 
 router.post('/logout', isLoggedIn(), (req, res, next) => {
   req.session.destroy();
-  console.log('session --------->: ', req.session)
+  console.log('session --------->: ', req.session);
   res.status(204).send();
   return;
 });
@@ -99,7 +99,7 @@ router.post('/user/:id', async (req, res, next) => {
 router.post('/:clientID', async (req, res, next) => {
   try {
     const { clientID } = req.params;
-    const client = await Client.findOne({clientID});
+    const client = await Client.findOne({ clientID });
     res.json(client);
   } catch (error) {
     console.log(error);
