@@ -20,6 +20,7 @@ router.post('/newTraining', async (req, res, next) => {
         { $push: { trainings: newTraining._id } },
         { new: true }
       );
+
     }
 
     res.status(200).json(newTraining);
