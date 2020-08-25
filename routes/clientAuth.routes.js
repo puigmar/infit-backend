@@ -4,9 +4,10 @@ const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const User = require('../models/User.model.js');
+const Client = require('../models/Client.model.js');
 const session = require('express-session');
 
-const uploader = require("../configs/cloudinary-setup");
+const uploader = require('../configs/cloudinary-setup');
 
 // HELPER FUNCTIONS
 const {
@@ -17,28 +18,28 @@ const {
 
 router.post(
   '/signup',
-  isNotLoggedIn(),
-  validationLoggin(),
   async (req, res, next) => {
     const { username, password } = req.body;
-    
+
     try {
       const usernameExists = await User.findOne({ username }, 'username');
 
       if (usernameExists) return next(createError(400));
-      else {
-        const salt = bcrypt.genSaltSync(saltRounds);
-        const hashPass = bcrypt.hashSync(password, salt);
 
-        const newUser = await User.create({
-          ...req.body,
-          password: hashPass,
-        });
+      const salt = bcrypt.genSaltSync(saltRounds);
+      const hashPass = bcrypt.hashSync(password, salt);
 
-        req.session.currentUser = newUser;
-        console.log('newUser register', newUser)
-        res.status(200).json(newUser);
-      }
+      const newUser = await User.create({
+        ...req.body,
+        password: hashPass,
+      });
+
+      const thisUser = await User.findOne({ username }, 'username');
+
+        const newCoach = await Client.create(thisUser._id)
+
+      req.session.currentUser = newUser;
+      res.status(200).json(newUser);
     } catch (err) {
       next(err);
     }
@@ -47,8 +48,6 @@ router.post(
 
 router.post(
   '/login',
-  isNotLoggedIn(),
-  validationLoggin(),
   async (req, res, next) => {
     const { username, password } = req.body;
 
@@ -74,13 +73,12 @@ router.post(
   '/uploadPhotoAvatar',
   uploader.single('avatarUrl'),
   (req, res, next) => {
-
     if (!req.file) {
       next(new Error('No file uploaded!'));
       return;
     }
-    
-    res.json({ avatar_url: req.file.secure_url});
+
+    res.json({ avatar_url: req.file.secure_url });
   }
 );
 
@@ -95,14 +93,22 @@ router.post('/user/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findById(id);
-    res.json(user)
+    res.json(user);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     next(error);
   }
 });
 
-
+router.post('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const client= await Client.findById(id);
+    res.json(client);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 router.post('/meeting', async (req, res, next) => {});
 
@@ -112,7 +118,7 @@ router.post('/meeting-room/:roomid', (req, res, next) => {
 
 router.put('/meeting-room/:roomid', (req, res, next) => {
   // update del modelo program referencia del usuario loggeado
-  // program.objective / program.pack.duration = 
+  // program.objective / program.pack.duration =
   // habrá que cambiar la fecha de inicio del programa
   // Crear registro en Meeting
   // Crear o actualizar registro en ScheduleDay
