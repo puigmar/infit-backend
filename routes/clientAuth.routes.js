@@ -17,10 +17,10 @@ const {
 } = require('../helpers/middlewares');
 
 router.post('/signup', async (req, res, next) => {
-  const { username, password } = req.body;
+  const {username, password, client } = req.body;
 
   try {
-    const usernameExists = await User.findOne({ username }, 'username');
+    const usernameExists = await User.findOne({ username }, 'username')
 
     if (usernameExists) return next(createError(400));
 
@@ -30,15 +30,23 @@ router.post('/signup', async (req, res, next) => {
     const newUser = await User.create({
       ...req.body,
       password: hashPass,
-    });
+    }); 
 
-    const thisUser = await User.findOne({ username });
+    const modClient = {
+      ...client,
+      clientID: newUser._id.toString()
+    }
+    
+    console.log('modClient: ----------------> ', modClient)
 
-    const newClient = await Client.create({clientID: newUser._id,...client});
+    const newClient = await Client.create(modClient);
+    if (!newClient) {
+      return next(createError(404))	            
+    }
 
-    req.session.currentUser = newUser;
+    console.log('Esto es newUser ----> newUser: ', newUser)
     res.status(200).json(newUser);
-    res.status(200).json(newClient);
+
   } catch (err) {
     next(err);
   }
