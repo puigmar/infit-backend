@@ -81,7 +81,7 @@ router.post('/:exerciseid', async (req, res, next) => {
   }
 });
 
-reouter.post('/:coachID', async (req, res, next) => {
+router.post('/:coachID', async (req, res, next) => {
   try {
     const { coachID } = req.params;
     const exercises = Exercise.find({coachID})
