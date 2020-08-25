@@ -21,7 +21,7 @@ router.post(
   isNotLoggedIn(),
   validationLoggin(),
   async (req, res, next) => {
-    const { username, password, client } = req.body;
+    const {username, password, client } = req.body;
     try {
       const usernameExists = await User.findOne({ username }, 'username');
 
@@ -41,16 +41,19 @@ router.post(
         console.log('Nuevo Usuario ------>', newUser)
         
         if(newUser){
-          const newClient = await Client.create({...client});
+          const newClient = await Client.create({clientID: newUser._id,...client});
           console.log('Nuevo Cliente ------>', newClient)
           if (!newClient) {
             return next(createError(404))
-          } else {
-            req.session.currentUser = {
-              ...req.session.currentUser,
-              newClient
+          }/*else {
+            req.session.currentUser._doc = {
+              ...req.session.currentUser._doc,
+              client:newClient
             };
-          }
+
+            console.log('req.session: ', req.session.currentUser)
+          }*/
+          console.log('Esto es newUser ----> newUser: ', newUser)
           res.status(200).json(newUser);
         }
         
@@ -102,6 +105,7 @@ router.post(
 
 router.post('/logout', isLoggedIn(), (req, res, next) => {
   req.session.destroy();
+  console.log('session --------->: ', req.session)
   res.status(204).send();
   return;
 });

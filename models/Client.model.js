@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const clientSchema = new Schema(
   {
     clientID: { type: Schema.Types.ObjectId, ref: 'User' },
+    trainingID: { type: Schema.Types.ObjectId, ref: "Training" },
     savePhoto: {
       type: Boolean,
       default: false,
