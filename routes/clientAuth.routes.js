@@ -16,58 +16,53 @@ const {
   validationLoggin,
 } = require('../helpers/middlewares');
 
-router.post(
-  '/signup',
-  async (req, res, next) => {
-    const { username, password } = req.body;
+router.post('/signup', async (req, res, next) => {
+  const { username, password } = req.body;
 
-    try {
-      const usernameExists = await User.findOne({ username }, 'username');
+  try {
+    const usernameExists = await User.findOne({ username }, 'username');
 
-      if (usernameExists) return next(createError(400));
+    if (usernameExists) return next(createError(400));
 
-      const salt = bcrypt.genSaltSync(saltRounds);
-      const hashPass = bcrypt.hashSync(password, salt);
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hashPass = bcrypt.hashSync(password, salt);
 
-      const newUser = await User.create({
-        ...req.body,
-        password: hashPass,
-      });
+    const newUser = await User.create({
+      ...req.body,
+      password: hashPass,
+    });
 
-      const thisUser = await User.findOne({ username }, 'username');
+    const thisUser = await User.findOne({ username });
 
-        const newCoach = await Client.create(thisUser._id)
+    const newClient = await Client.create({clientID: newUser._id,...client});
 
-      req.session.currentUser = newUser;
-      res.status(200).json(newUser);
-    } catch (err) {
-      next(err);
-    }
+    req.session.currentUser = newUser;
+    res.status(200).json(newUser);
+    res.status(200).json(newClient);
+  } catch (err) {
+    next(err);
   }
-);
+});
 
-router.post(
-  '/login',
-  async (req, res, next) => {
-    const { username, password } = req.body;
+router.post('/login', async (req, res, next) => {
+  const { username, password } = req.body;
 
-    try {
-      const user = await User.findOne({ username });
+  try {
+    const user = await User.findOne({ username });
 
-      if (!user) {
-        next(createError(404));
-      } else if (bcrypt.compareSync(password, user.password)) {
-        req.session.currentUser = user;
-        res.status(200).json(user);
-        return;
-      } else {
-        next(createError(401));
-      }
-    } catch (error) {
-      next(error);
+    if (!user) {
+      next(createError(404));
+    } else if (bcrypt.compareSync(password, user.password)) {
+      req.session.currentUser = user;
+      res.status(200).json(user);
+      return;
+    } else {
+      next(createError(401));
     }
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 router.post(
   '/uploadPhotoAvatar',
@@ -100,10 +95,10 @@ router.post('/user/:id', async (req, res, next) => {
   }
 });
 
-router.post('/:id', async (req, res, next) => {
+router.post('/:clientID', async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const client= await Client.findById(id);
+    const { clientID } = req.params;
+    const client = await Client.findOne({clientID});
     res.json(client);
   } catch (error) {
     console.log(error);

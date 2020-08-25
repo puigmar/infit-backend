@@ -54,10 +54,21 @@ router.post('/delete/:id', async (req, res, next) => {
 
 //CALLS
 //get program by programID
-router.post('/:id', async (req, res, next) => {
+router.post('/coach/:coachID', async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const program = await Program.findById(id);
+    const { coachID } = req.params;
+    const program = await Program.findOne({ coachID })
+      .populate('clientID')
+      .populate('coachID')
+      .populate('training');
+    res.status(200).json(program);
+  } catch (error) {}
+});
+
+router.post('/:clientID/:coachID', async (req, res, next) => {
+  try {
+    const { clientID, coachID } = req.params;
+    const program = await Program.findOne({ clientID, coachID });
     res.status(200).json(program);
   } catch (error) {}
 });
