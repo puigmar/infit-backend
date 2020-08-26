@@ -13,7 +13,7 @@ const programSchema = new Schema({
     price: Number,
     weekSessions: Number
   },
-  initialDay: Date
+  initialDay: String,
 }, {
   timestamps: {
     createdAt: 'created_at',
