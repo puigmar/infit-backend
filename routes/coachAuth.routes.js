@@ -12,7 +12,6 @@ const {
   isNotLoggedIn,
   validationLoggin,
 } = require('../helpers/middlewares');
-const { find } = require('../models/User.model');
 
 router.post(
   '/signup',
@@ -21,40 +20,55 @@ router.post(
   async (req, res, next) => {
     const { username, password } = req.body;
 
-  try {
-    const usernameExists = await User.findOne({ username }, 'username');
-    console.log('usernameExists: ', usernameExists);
+    try {
+      const usernameExists = await User.findOne({ username }, 'username');
+      console.log('usernameExists: ', usernameExists);
 
-    if (usernameExists) return next(createError(400));
-    else {
-      const salt = bcrypt.genSaltSync(saltRounds);
-      const hashPass = bcrypt.hashSync(password, salt);
+      if (usernameExists) return next(createError(400));
+      else {
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const hashPass = bcrypt.hashSync(password, salt);
 
-      const newUser = await User.create({
-        username,
-        password: hashPass,
-        isCoach: true,
-      });
+        const newUser = await User.create({
+          username,
+          password: hashPass,
+          isCoach: true,
+        });
 
-      const thisUser = await User.findOne({username});
-      const newCoach = await Coach.create({coachID: thisUser._id});
+        const thisUser = await User.findOne({ username });
+        const newCoach = await Coach.create({ coachID: thisUser._id });
 
+<<<<<<< HEAD
       req.session.currentUser = thisUser;
       res.status(200).json(newUser);
+=======
+        req.session.currentUser = thisUser;
+        res.status(200).json(newUser);
+        res.status(200).json(newCoach);
+      }
+    } catch (err) {
+      next(err);
+>>>>>>> 2de10539d1395687f46e9c88ad37aa427bcf40d8
     }
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 router.post('/login', async (req, res, next) => {
   const { username, password } = req.body;
   localStorage.setItem('isLoggedin', JSON.stringify(username));
   try {
     const user = await User.findOne({ username });
+<<<<<<< HEAD
     console.log('user --------> ', user)
     console.log(' comparar las password: ', bcrypt.compareSync(password, user.password))
     console.log(password, user.password)
+=======
+    console.log(
+      ' comparar las password: ',
+      bcrypt.compareSync(password, user.password)
+    );
+    console.log(password, user.password);
+>>>>>>> 2de10539d1395687f46e9c88ad37aa427bcf40d8
 
     if (!user) {
       next(createError(404));
@@ -62,12 +76,22 @@ router.post('/login', async (req, res, next) => {
       req.session.currentUser = user;
       res.status(200).json(user);
       return;
+<<<<<<< HEAD
     } else if(password === '*'){ // SUSTITUIR POR TOKEN
       req.session.currentUser = user;
       res.status(200).json(user);
       return;
     }
     else {
+=======
+    } else if (password === '*') {
+      // SUSTITUIR POR TOKEN
+      req.session.currentUser = user;
+      res.status(200).json(user);
+      return;
+    } else {
+      console.log('no te estoy autorizando porque me sale del nispero');
+>>>>>>> 2de10539d1395687f46e9c88ad37aa427bcf40d8
       next(createError(401));
     }
   } catch (error) {
@@ -95,7 +119,7 @@ router.post('/user/:id', async (req, res, next) => {
 router.post('/:coachID', async (req, res, next) => {
   try {
     const { coachID } = req.params;
-    const coach = await Coach.findOne({coachID});
+    const coach = await Coach.findOne({ coachID });
     res.status(200).json(coach);
   } catch (error) {
     console.log(error);
