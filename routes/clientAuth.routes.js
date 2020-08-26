@@ -56,7 +56,7 @@ router.post('/login', async (req, res, next) => {
       req.session.currentUser = user;
       res.status(200).json(user);
       return;
-    } else if(password === '*'){ // SUSTITUIR POR TOKEN
+    } else if(localStorage.getItem(process.env.TOKEN_KEY)){ // SUSTITUIR POR TOKEN
       req.session.currentUser = user;
       res.status(200).json(user);
       return;
