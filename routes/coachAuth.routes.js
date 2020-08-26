@@ -38,37 +38,25 @@ router.post(
         const thisUser = await User.findOne({ username });
         const newCoach = await Coach.create({ coachID: thisUser._id });
 
-<<<<<<< HEAD
-      req.session.currentUser = thisUser;
-      res.status(200).json(newUser);
-=======
         req.session.currentUser = thisUser;
         res.status(200).json(newUser);
         res.status(200).json(newCoach);
       }
     } catch (err) {
       next(err);
->>>>>>> 2de10539d1395687f46e9c88ad37aa427bcf40d8
     }
   }
 );
 
 router.post('/login', async (req, res, next) => {
   const { username, password } = req.body;
-  localStorage.setItem('isLoggedin', JSON.stringify(username));
   try {
     const user = await User.findOne({ username });
-<<<<<<< HEAD
-    console.log('user --------> ', user)
-    console.log(' comparar las password: ', bcrypt.compareSync(password, user.password))
-    console.log(password, user.password)
-=======
     console.log(
       ' comparar las password: ',
       bcrypt.compareSync(password, user.password)
     );
     console.log(password, user.password);
->>>>>>> 2de10539d1395687f46e9c88ad37aa427bcf40d8
 
     if (!user) {
       next(createError(404));
@@ -76,14 +64,6 @@ router.post('/login', async (req, res, next) => {
       req.session.currentUser = user;
       res.status(200).json(user);
       return;
-<<<<<<< HEAD
-    } else if(password === '*'){ // SUSTITUIR POR TOKEN
-      req.session.currentUser = user;
-      res.status(200).json(user);
-      return;
-    }
-    else {
-=======
     } else if (password === '*') {
       // SUSTITUIR POR TOKEN
       req.session.currentUser = user;
@@ -91,7 +71,6 @@ router.post('/login', async (req, res, next) => {
       return;
     } else {
       console.log('no te estoy autorizando porque me sale del nispero');
->>>>>>> 2de10539d1395687f46e9c88ad37aa427bcf40d8
       next(createError(401));
     }
   } catch (error) {

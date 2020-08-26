@@ -69,25 +69,25 @@ router.post('/:id/delete', async (req, res, next) => {
 //CALLS
 
 //get exercise by exerciseid
-router.post('/:exerciseid', async (req, res, next) => {
-  // devuelve info del sesión
-  try {
-    const { exerciseid } = req.params;
-    const exercise = await Exercise.findOne({_id: exerciseid});
-    res.status(200).json(exercise);
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-});
+// router.post('/:exerciseid', async (req, res, next) => {
+//   // devuelve info del sesión
+//   try {
+//     const { exerciseid } = req.params;
+//     const exercise = await Exercise.findOne({_id: exerciseid});
+//     res.status(200).json(exercise);
+//   } catch (error) {
+//     console.log(error);
+//     next(error);
+//   }
+// });
 
 router.post('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log(coachID);
-    const exercises = Exercise.find({ coachID: id });
-    console.log(exercieses);
-    res.status(200).json({exercises});
+    console.log('coach: ', id);
+    const exercises = await Exercise.find({ coachID: id });
+    console.log(exercises);
+    res.status(200).json([...exercises]);
   } catch (error) {
     console.log(error);
     next();
