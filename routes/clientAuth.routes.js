@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const User = require('../models/User.model.js');
 const Client = require('../models/Client.model.js');
+const Program = require('../models/Program.model.js');
+
 const session = require('express-session');
 
 const uploader = require('../configs/cloudinary-setup');
@@ -18,7 +20,7 @@ const {
 
 router.post('/signup', async (req, res, next) => {
   const {username, password, client } = req.body;
-
+  console.log('client: ------------>', client)
   try {
     const usernameExists = await User.findOne({ username }, 'username')
 
@@ -32,21 +34,31 @@ router.post('/signup', async (req, res, next) => {
       password: hashPass,
     }); 
 
-    const modClient = {
-      ...client,
-      clientID: newUser._id.toString()
+    // CREATE CLIENT
+    if(newUser){
+      req.session.currentUser = newUser;
+      const newClient = await Client.create({
+        ...client,
+        clientID: newUser._id
+      });
+
+      // CREATE PARTIAL PROGRAM
+      if(newClient){
+        const newProgram = await Program.create ({
+          clientID: newUser._id,
+          objective: client.wizard.objective,
+          pack: client.wizard.pack,
+        })
+        req.session.currentUser = {
+          ...req.session.currentUser,
+          ...newClient
+        }
+
+        if(newProgram){
+          res.status(200).json(newProgram);
+        }
+      }
     }
-    
-    console.log('modClient: ----------------> ', modClient)
-
-    const newClient = await Client.create(modClient);
-    if (!newClient) {
-      return next(createError(404))	            
-    }
-
-    console.log('Esto es newUser ----> newUser: ', newUser)
-    res.status(200).json(newUser);
-
   } catch (err) {
     next(err);
   }
@@ -62,6 +74,15 @@ router.post('/login', async (req, res, next) => {
       next(createError(404));
     } else if (bcrypt.compareSync(password, user.password)) {
       req.session.currentUser = user;
+
+      const newClient = await Client.findOne({clientID: user._id});
+      if(newClient){
+        console.log('tenemos los datos del cliente!!')
+        req.session.currentUser._doc = {
+          ...req.session.currentUser,
+          ...newClient
+        }
+      }
       res.status(200).json(user);
       return;
     } else {
@@ -87,7 +108,6 @@ router.post(
 
 router.post('/logout', isLoggedIn(), (req, res, next) => {
   req.session.destroy();
-  console.log('session --------->: ', req.session)
   res.status(204).send();
   return;
 });
@@ -99,7 +119,6 @@ router.post('/user/:id', async (req, res, next) => {
     const user = await User.findById(id);
     res.json(user);
   } catch (error) {
-    console.log(error);
     next(error);
   }
 });
@@ -107,7 +126,7 @@ router.post('/user/:id', async (req, res, next) => {
 router.post('/:clientID', async (req, res, next) => {
   try {
     const { clientID } = req.params;
-    const client = await Client.findOne({clientID});
+    const client = await Client.findOne({ clientID });
     res.json(client);
   } catch (error) {
     console.log(error);
