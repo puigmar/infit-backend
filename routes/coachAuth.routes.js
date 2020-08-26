@@ -20,7 +20,6 @@ router.post(
   validationLoggin(),
   async (req, res, next) => {
     const { username, password } = req.body;
-    
 
   try {
     const usernameExists = await User.findOne({ username }, 'username');
@@ -42,7 +41,6 @@ router.post(
 
       req.session.currentUser = thisUser;
       res.status(200).json(newUser);
-      res.status(200).json(newCoach);
     }
   } catch (err) {
     next(err);
@@ -51,9 +49,10 @@ router.post(
 
 router.post('/login', async (req, res, next) => {
   const { username, password } = req.body;
-
+  localStorage.setItem('isLoggedin', JSON.stringify(username));
   try {
     const user = await User.findOne({ username });
+    console.log('user --------> ', user)
     console.log(' comparar las password: ', bcrypt.compareSync(password, user.password))
     console.log(password, user.password)
 
@@ -69,7 +68,6 @@ router.post('/login', async (req, res, next) => {
       return;
     }
     else {
-      console.log('no te estoy autorizando porque me sale del nispero')
       next(createError(401));
     }
   } catch (error) {

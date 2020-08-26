@@ -22,6 +22,7 @@ router.post('/checkExistUser', async (req, res, next) => {
 })
 
 router.get("/me", isLoggedIn(), (req, res, next) => {
+  console.log('sesion: ',req.session.currentUser)
   // si está logueado, previene que el password sea enviado y devuelve un json con los datos del usuario (disponibles en req.session.currentUser)
   req.session.currentUser.password = "*"; // CREATE TOKEN
   res.json(req.session.currentUser);
