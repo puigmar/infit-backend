@@ -4,6 +4,8 @@ const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const User = require('../models/User.model.js');
+const Client = require('../models/Client.model.js');
+const Program = require('../models/Program.model.js');
 const session = require('express-session');
 
 const uploader = require("../configs/cloudinary-setup");
@@ -20,7 +22,7 @@ router.post(
   isNotLoggedIn(),
   validationLoggin(),
   async (req, res, next) => {
-    const { username, password } = req.body;
+    const { username, password, client } = req.body;
     
     try {
       const usernameExists = await User.findOne({ username }, 'username');
@@ -35,15 +37,64 @@ router.post(
           password: hashPass,
         });
 
-        req.session.currentUser = newUser;
-        console.log('newUser register', newUser)
-        res.status(200).json(newUser);
+        if(newUser){
+          req.session.currentUser = newUser;
+          const newClient = await Client.create({
+            ...client,
+            clientID: newUser._id
+          });
+    
+          // CREATE PARTIAL PROGRAM
+          if(newClient){
+            const newProgram = await Program.create ({
+              clientID: newUser._id,
+              objective: client.wizard.objective,
+              pack: client.wizard.pack,
+            })
+            req.session.currentUser = {
+              ...req.session.currentUser,
+              ...newClient
+            }
+            console.log('NEW PROGRAM: --------->', newProgram)
+            if(newProgram){
+              res.status(200).json(newProgram);
+            }
+          }
+        }
       }
     } catch (err) {
       next(err);
     }
   }
 );
+
+/*
+// CREATE CLIENT
+    if(newUser){
+      req.session.currentUser = newUser;
+      const newClient = await Client.create({
+        ...client,
+        clientID: newUser._id
+      });
+
+      // CREATE PARTIAL PROGRAM
+      if(newClient){
+        const newProgram = await Program.create ({
+          clientID: newUser._id,
+          objective: client.wizard.objective,
+          pack: client.wizard.pack,
+        })
+        req.session.currentUser = {
+          ...req.session.currentUser,
+          ...newClient
+        }
+
+        if(newProgram){
+          res.status(200).json(newProgram);
+        }
+      }
+    }
+*/
 
 router.post(
   '/login',

@@ -10,7 +10,12 @@ const clientSchema = new Schema(
     },
     name: String,
     surname: String,
-    card: String,
+    card: {
+      owner: String,
+      number: Number,
+      expireAt: String,
+      cvv: Number
+    },
     telephone: Number,
     biometrics: {
       age: Number,
@@ -34,10 +39,6 @@ const clientSchema = new Schema(
         duration: Number,
         price: Number,
       },
-    },
-    sexPreference: {
-      type: String,
-      enum: ['male', 'female'],
     },
     adress: String,
     photos: [
