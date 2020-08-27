@@ -18,12 +18,12 @@ router.post(
   isNotLoggedIn(),
   validationLoggin(),
   async (req, res, next) => {
-    const { username, password } = req.body;
+    const { username, password, client } = req.body;
 
     try {
       const usernameExists = await User.findOne({ username }, 'username');
       console.log('usernameExists: ', usernameExists);
-
+      console.log('Este es el client del coach back', client)
       if (usernameExists) {
         return next(createError(400));
       } else {
@@ -37,13 +37,16 @@ router.post(
           isCoach:true
         });
 
-        console.log('este es el nuevo usuario', newUser)
-        const newCoach = await Coach.create({
-          coachID: newUser._id,
-        });
-
-        req.session.currentUser = newCoach;
-        res.status(200).json(newUser);
+        if(newUser) {
+          console.log('este es el nuevo usuario', newUser)
+          const newCoach = await Coach.create({
+            ...client,
+            coachID: newUser._id,
+          });
+          
+          req.session.currentUser = newCoach;
+          res.status(200).json(newUser);
+        }
       }
     } catch (err) {
       next(err);
