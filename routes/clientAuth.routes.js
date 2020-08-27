@@ -8,8 +8,6 @@ const Client = require('../models/Client.model.js');
 const Program = require('../models/Program.model.js');
 const session = require('express-session');
 
-
-
 // HELPER FUNCTIONS
 const {
   isLoggedIn,
@@ -23,7 +21,7 @@ router.post(
   validationLoggin(),
   async (req, res, next) => {
     const { username, password, client } = req.body;
-    
+
     try {
       const usernameExists = await User.findOne({ username }, 'username');
 
@@ -37,27 +35,31 @@ router.post(
           password: hashPass,
         });
 
-        if(newUser){
+        if (newUser) {
           req.session.currentUser = newUser;
           const newClient = await Client.create({
             ...client,
-            clientID: newUser._id
+            clientID: newUser._id,
           });
-    
+
           // CREATE PARTIAL PROGRAM
-          if(newClient){
-            const newProgram = await Program.create ({
+          if (newClient) {
+            const newProgram = await Program.create({
               clientID: newUser._id,
               objective: client.wizard.objective,
               pack: client.wizard.pack,
-            })
+            });
             req.session.currentUser = {
               ...req.session.currentUser,
-              ...newClient
-            }
-            console.log('NEW PROGRAM: --------->', newProgram)
-            if(newProgram){
-              res.status(200).json(newProgram);
+              ...newClient,
+            };
+
+
+            console.log('NEW PROGRAM: --------->', newProgram);
+            console.log('NEW USER: --------->', newUser);
+
+            if (newProgram) {
+              res.status(200).json(newUser);
             }
           }
         }
@@ -80,13 +82,13 @@ router.post('/login', async (req, res, next) => {
       req.session.currentUser = user;
       res.status(200).json(user);
       return;
-    } else if(localStorage.getItem(process.env.TOKEN_KEY)){ // SUSTITUIR POR TOKEN
+    } else if (localStorage.getItem(process.env.TOKEN_KEY)) {
+      // SUSTITUIR POR TOKEN
       req.session.currentUser = user;
       res.status(200).json(user);
       return;
-    }
-    else {
-      console.log('no te estoy autorizando porque me sale del nispero')
+    } else {
+      console.log('no te estoy autorizando porque me sale del nispero');
       next(createError(401));
     }
   } catch (error) {
