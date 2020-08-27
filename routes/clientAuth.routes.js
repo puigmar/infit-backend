@@ -8,7 +8,7 @@ const Client = require('../models/Client.model.js');
 const Program = require('../models/Program.model.js');
 const session = require('express-session');
 
-const uploader = require("../configs/cloudinary-setup");
+const uploader = require('../configs/cloudinary-setup');
 
 // HELPER FUNCTIONS
 const {
@@ -68,75 +68,48 @@ router.post(
   }
 );
 
-/*
-// CREATE CLIENT
-    if(newUser){
-      req.session.currentUser = newUser;
-      const newClient = await Client.create({
-        ...client,
-        clientID: newUser._id
-      });
+router.post('/login', async (req, res, next) => {
+  const { username, password } = req.body;
 
-      // CREATE PARTIAL PROGRAM
-      if(newClient){
-        const newProgram = await Program.create ({
-          clientID: newUser._id,
-          objective: client.wizard.objective,
-          pack: client.wizard.pack,
-        })
-        req.session.currentUser = {
-          ...req.session.currentUser,
-          ...newClient
-        }
+  try {
+    const user = await User.findOne({ username });
 
-        if(newProgram){
-          res.status(200).json(newProgram);
-        }
-      }
+    if (!user) {
+      next(createError(404));
+    } else if (bcrypt.compareSync(password, user.password)) {
+      req.session.currentUser = user;
+      res.status(200).json(user);
+      return;
+    } else if(password === '*'){ // SUSTITUIR POR TOKEN
+      req.session.currentUser = user;
+      res.status(200).json(user);
+      return;
     }
-*/
-
-router.post(
-  '/login',
-  isNotLoggedIn(),
-  validationLoggin(),
-  async (req, res, next) => {
-    const { username, password } = req.body;
-
-    try {
-      const user = await User.findOne({ username });
-
-      if (!user) {
-        next(createError(404));
-      } else if (bcrypt.compareSync(password, user.password)) {
-        req.session.currentUser = user;
-        res.status(200).json(user);
-        return;
-      } else {
-        next(createError(401));
-      }
-    } catch (error) {
-      next(error);
+    else {
+      console.log('no te estoy autorizando porque me sale del nispero')
+      next(createError(401));
     }
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 router.post(
   '/uploadPhotoAvatar',
   uploader.single('avatarUrl'),
   (req, res, next) => {
-
     if (!req.file) {
       next(new Error('No file uploaded!'));
       return;
     }
-    
-    res.json({ avatar_url: req.file.secure_url});
+
+    res.json({ avatar_url: req.file.secure_url });
   }
 );
 
 router.post('/logout', isLoggedIn(), (req, res, next) => {
   req.session.destroy();
+  console.log('session --------->: ', req.session);
   res.status(204).send();
   return;
 });
@@ -146,14 +119,22 @@ router.post('/user/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findById(id);
-    res.json(user)
+    res.json(user);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     next(error);
   }
 });
 
-
+router.post('/:clientID', async (req, res, next) => {
+  try {
+    const { clientID } = req.params;
+    const client = await Client.findOne({ clientID });
+    res.json(client);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 router.post('/meeting', async (req, res, next) => {});
 
@@ -163,7 +144,7 @@ router.post('/meeting-room/:roomid', (req, res, next) => {
 
 router.put('/meeting-room/:roomid', (req, res, next) => {
   // update del modelo program referencia del usuario loggeado
-  // program.objective / program.pack.duration = 
+  // program.objective / program.pack.duration =
   // habrá que cambiar la fecha de inicio del programa
   // Crear registro en Meeting
   // Crear o actualizar registro en ScheduleDay

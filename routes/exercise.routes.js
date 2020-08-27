@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Exercise = require('../models/Exercise.model');
-const Block = require('../models/Block.model')
+const Block = require('../models/Block.model');
 
 const uploadCloud = require('../configs/cloudinary-setup');
 
@@ -73,11 +73,24 @@ router.post('/:exerciseid', async (req, res, next) => {
   // devuelve info del sesión
   try {
     const { exerciseid } = req.params;
-    const exercise = await Exercise.findById(exerciseid);
+    const exercise = await Exercise.findOne({_id: exerciseid});
     res.status(200).json(exercise);
   } catch (error) {
     console.log(error);
     next(error);
+  }
+});
+
+router.post('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    console.log(coachID);
+    const exercises = Exercise.find({ coachID: id });
+    console.log(exercieses);
+    res.status(200).json({exercises});
+  } catch (error) {
+    console.log(error);
+    next();
   }
 });
 
