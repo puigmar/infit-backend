@@ -21,6 +21,8 @@ router.post('/newExercise', async (req, res, next) => {
       );
     }
 
+    console.log(newExercise)
+
     res.status(200).json(newExercise);
   } catch (error) {
     console.log(error);
@@ -58,7 +60,7 @@ router.post(
 );
 
 // DELETE
-router.post('/:id/delete', async (req, res, next) => {
+router.post('/delete/:id', async (req, res, next) => {
   try {
     await Exercise.findByIdAndRemove({ _id: req.params.id });
   } catch (error) {
@@ -81,7 +83,7 @@ router.post('/:id/delete', async (req, res, next) => {
 //   }
 // });
 
-router.post('/:id', async (req, res, next) => {
+router.post('/coach/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     console.log('coach: ', id);

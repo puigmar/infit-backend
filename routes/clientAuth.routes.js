@@ -112,6 +112,19 @@ router.post('/:clientID', async (req, res, next) => {
   }
 });
 
+router.post('/coach/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    console.log('coach: ', id);
+    const clients = await Client.find({ coachID: id });
+    console.log(clients);
+    res.status(200).json([...clients]);
+  } catch (error) {
+    console.log(error);
+    next();
+  }
+});
+
 router.post('/meeting', async (req, res, next) => {});
 
 router.post('/meeting-room/:roomid', (req, res, next) => {
