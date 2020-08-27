@@ -41,10 +41,6 @@ const clientSchema = new Schema(
         price: Number,
       },
     },
-    /*sexPreference: {
-      type: String,
-      enum: ['male', 'female'],
-    },*/
     adress: String,
     photos: [
       {

@@ -24,23 +24,26 @@ router.post(
       const usernameExists = await User.findOne({ username }, 'username');
       console.log('usernameExists: ', usernameExists);
 
-      if (usernameExists) return next(createError(400));
-      else {
+      if (usernameExists) {
+        return next(createError(400));
+      } else {
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashPass = bcrypt.hashSync(password, salt);
 
+
         const newUser = await User.create({
-          username,
+          ...req.body,
           password: hashPass,
-          isCoach: true,
+          isCoach:true
         });
 
-        const thisUser = await User.findOne({ username });
-        const newCoach = await Coach.create({ coachID: thisUser._id });
+        console.log('este es el nuevo usuario', newUser)
+        const newCoach = await Coach.create({
+          coachID: newUser._id,
+        });
 
-        req.session.currentUser = thisUser;
+        req.session.currentUser = newCoach;
         res.status(200).json(newUser);
-        res.status(200).json(newCoach);
       }
     } catch (err) {
       next(err);
