@@ -8,7 +8,7 @@ const Client = require('../models/Client.model.js');
 const Program = require('../models/Program.model.js');
 const session = require('express-session');
 
-const uploader = require('../configs/cloudinary-setup');
+
 
 // HELPER FUNCTIONS
 const {
@@ -93,19 +93,6 @@ router.post('/login', async (req, res, next) => {
     next(error);
   }
 });
-
-router.post(
-  '/uploadPhotoAvatar',
-  uploader.single('avatarUrl'),
-  (req, res, next) => {
-    if (!req.file) {
-      next(new Error('No file uploaded!'));
-      return;
-    }
-
-    res.json({ avatar_url: req.file.secure_url });
-  }
-);
 
 router.post('/logout', isLoggedIn(), (req, res, next) => {
   req.session.destroy();
