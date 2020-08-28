@@ -21,7 +21,7 @@ router.post(
   validationLoggin(),
   async (req, res, next) => {
     const { username, password, client } = req.body;
-
+    console.log('client: ------->: ', client)
     try {
       const usernameExists = await User.findOne({ username }, 'username');
 

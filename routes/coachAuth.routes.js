@@ -18,7 +18,7 @@ router.post(
   isNotLoggedIn(),
   validationLoggin(),
   async (req, res, next) => {
-    const { username, password } = req.body;
+    const { username, password, client } = req.body;
 
     try {
       const usernameExists = await User.findOne({ username }, 'username');
@@ -39,7 +39,8 @@ router.post(
 
         console.log('este es el nuevo usuario', newUser)
         const newCoach = await Coach.create({
-          coachID: newUser._id,
+          ...client,
+          coachID: newUser._id
         });
 
         req.session.currentUser = newCoach;
