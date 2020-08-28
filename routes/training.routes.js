@@ -21,6 +21,7 @@ router.post('/newTraining', async (req, res, next) => {
         { new: true }
       );
 
+
     }
 
     res.status(200).json(newTraining);
