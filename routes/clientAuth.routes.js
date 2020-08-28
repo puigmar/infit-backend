@@ -21,7 +21,7 @@ router.post(
   validationLoggin(),
   async (req, res, next) => {
     const { username, password, client } = req.body;
-
+    console.log('client: ------->: ', client)
     try {
       const usernameExists = await User.findOne({ username }, 'username');
 
@@ -115,15 +115,28 @@ router.post('/user/:id', async (req, res, next) => {
   }
 });
 
-router.post('/:clientID', async (req, res, next) => {
+router.post('/id/:clientID', async (req, res, next) => {
   try {
     const { clientID } = req.params;
-    const client = await Client.findOne({ clientID });
-    res.json(client);
+    const client = await Client.findOne({ _id: clientID });
+    console.log('clientID: ----->', client)
+    res.status(200).json(client);
   } catch (error) {
     console.log(error);
   }
 });
+
+router.post('/clientID/:clientID', async (req, res, next) => {
+  try {
+    const { clientID } = req.params;
+    const client = await Client.findOne({ clientID });
+    console.log('clientID: ----->', client)
+    res.status(200).json(client);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 
 router.post('/coach/:id', async (req, res, next) => {
   try {

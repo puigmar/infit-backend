@@ -46,6 +46,8 @@ router.post(
         exerciseUpdate['exerciseVideo'] = req.file.url;
       }
 
+      console.log('Estos son los valores que me vienen por body', req.body)
+
       const exerciseUpdated = await Exercise.updateOne(
         { _id: id },
         { $set: { ...req.body } },
@@ -60,28 +62,36 @@ router.post(
 );
 
 // DELETE
-router.post('/delete/:id', async (req, res, next) => {
+router.post('/delete/:exerciseid', async (req, res, next) => {
   try {
-    await Exercise.findByIdAndRemove({ _id: req.params.id });
+    console.log('Este es el ID', req.params.exerciseid)
+    const { exerciseid } = req.params;
+
+    await Exercise.deleteOne({ _id: exerciseid }, (err) => {
+      if(err) console.log(err);
+      console.log("Successful deletion");
+    });
+    res.status(200)
   } catch (error) {
     console.log(error), next(error);
+    next(error)
   }
 });
 
 //CALLS
 
 //get exercise by exerciseid
-// router.post('/:exerciseid', async (req, res, next) => {
-//   // devuelve info del sesión
-//   try {
-//     const { exerciseid } = req.params;
-//     const exercise = await Exercise.findOne({_id: exerciseid});
-//     res.status(200).json(exercise);
-//   } catch (error) {
-//     console.log(error);
-//     next(error);
-//   }
-// });
+router.post('/:exerciseid', async (req, res, next) => {
+  // devuelve info del sesión
+  try {
+    const { exerciseid } = req.params;
+    const exercise = await Exercise.findOne({_id: exerciseid});
+    res.status(200).json(exercise);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
 
 router.post('/coach/:id', async (req, res, next) => {
   try {
