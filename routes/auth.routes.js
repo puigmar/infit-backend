@@ -28,7 +28,20 @@ router.post(
       return;
     }
 
-    res.json({ avatar_url: req.file.secure_url });
+    res.json({ media_url: req.file.secure_url });
+  }
+);
+
+router.post(
+  '/uploadImage',
+  uploader.single('image'),
+  (req, res, next) => {
+    if (!req.file) {
+      next(new Error('No file uploaded!'));
+      return;
+    }
+
+    res.json({ media_url: req.file.secure_url });
   }
 );
 
