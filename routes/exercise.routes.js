@@ -46,6 +46,8 @@ router.post(
         exerciseUpdate['exerciseVideo'] = req.file.url;
       }
 
+      console.log('Estos son los valores que me vienen por body', req.body)
+
       const exerciseUpdated = await Exercise.updateOne(
         { _id: id },
         { $set: { ...req.body } },
