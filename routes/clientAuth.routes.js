@@ -118,8 +118,9 @@ router.post('/user/:id', async (req, res, next) => {
 router.post('/:clientID', async (req, res, next) => {
   try {
     const { clientID } = req.params;
-    const client = await Client.findOne({ clientID });
-    res.json(client);
+    const client = await Client.findOne({ _id: clientID });
+    console.log('clientID: ----->', client)
+    res.status(200).json(client);
   } catch (error) {
     console.log(error);
   }
