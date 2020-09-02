@@ -24,6 +24,7 @@
     "multer": "^1.4.2",
     "multer-storage-cloudinary": "^2.2.1",
     "node-gyp": "^4.0.0",
+    "react-selectlist": "^3.0.6",
     "socket.io": "^2.3.0",
     "uuid": "^8.3.0"
   },

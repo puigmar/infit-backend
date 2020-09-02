@@ -37,15 +37,16 @@ router.post(
 
         if (newUser) {
           req.session.currentUser = newUser;
+          console.log('user._id---------->', newUser._id)
           const newClient = await Client.create({
             ...client,
-            clientID: newUser._id,
+            userID: newUser._id,
           });
 
           // CREATE PARTIAL PROGRAM
           if (newClient) {
             const newProgram = await Program.create({
-              clientID: newUser._id,
+              clientID: newClient._id,
               objective: client.wizard.objective,
               pack: client.wizard.pack,
             });
@@ -54,8 +55,8 @@ router.post(
               ...newClient,
             };
 
-
             console.log('NEW PROGRAM: --------->', newProgram);
+            console.log('NEW CLIENT: --------->', newClient);
             console.log('NEW USER: --------->', newUser);
 
             if (newProgram) {
@@ -118,18 +119,20 @@ router.post('/user/:id', async (req, res, next) => {
 router.post('/id/:clientID', async (req, res, next) => {
   try {
     const { clientID } = req.params;
+    console.log('clientID: ----->', clientID)
     const client = await Client.findOne({ _id: clientID });
-    console.log('clientID: ----->', client)
+    console.log('client: ----->', client)
     res.status(200).json(client);
   } catch (error) {
     console.log(error);
   }
 });
 
-router.post('/clientID/:clientID', async (req, res, next) => {
+router.get('/clientID/:clientID', async (req, res, next) => {
   try {
     const { clientID } = req.params;
-    const client = await Client.findOne({ clientID });
+    console.log('userID--------->:', clientID)
+    const client = await Client.findOne({ userID: clientID });
     console.log('clientID: ----->', client)
     res.status(200).json(client);
   } catch (error) {

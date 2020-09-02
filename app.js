@@ -17,6 +17,7 @@ const training = require('./routes/training.routes');
 const block = require('./routes/block.routes');
 const program = require('./routes/program.routes');
 const exercise = require('./routes/exercise.routes');
+const meeting = require('./routes/meeting.routes');
 
 // MONGOOSE CONNECTION
 mongoose
@@ -66,6 +67,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/exercise', exercise);
 app.use('/program', program);
 app.use('/training', training);
+app.use('/meeting', meeting);
 app.use('/block', block);
 app.use('/generic/auth', generic);
 app.use('/client/auth', client);

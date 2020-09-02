@@ -3,13 +3,14 @@ const Schema = mongoose.Schema;
 
 const scheduleDaySchema = new Schema(
   {
-    coachID: [{ type: Schema.Types.ObjectId, ref: 'Coach' }],
+    coachID: { type: Schema.Types.ObjectId, ref: 'Coach' },
     sessionsID: [{ type: Schema.Types.ObjectId, ref: 'Session' }],
-    meetingID:[ { type: Schema.Types.ObjectId, ref: 'Meeting' } ],
+    meetingID: [{ type: Schema.Types.ObjectId, ref: 'Meeting' }],
     date: Date.now(),
     availability: [
       {
-        min: Number
+        min: Number,
+        max: Number
       },
     ],
   },

@@ -54,7 +54,7 @@ router.post('/delete/:id', async (req, res, next) => {
 
 //CALLS
 //get program by coachID
-router.post('/coach/:coachID', async (req, res, next) => {
+router.get('/coach/:coachID', async (req, res, next) => {
   try {
     const { coachID } = req.params;
     const program = await Program.findOne({ coachID })
@@ -65,10 +65,18 @@ router.post('/coach/:coachID', async (req, res, next) => {
   } catch (error) {}
 });
 
-router.post('/:clientID/:coachID', async (req, res, next) => {
+router.get('/:clientID/:coachID', async (req, res, next) => {
   try {
     const { clientID, coachID } = req.params;
     const program = await Program.findOne({ clientID, coachID });
+    res.status(200).json(program);
+  } catch (error) {}
+});
+
+router.post('/inactive/:clientID', async (req, res, next) => {
+  try {
+    const { clientID } = req.params;
+    const program = await Program.find({ clientID});
     res.status(200).json(program);
   } catch (error) {}
 });

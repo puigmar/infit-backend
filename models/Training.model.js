@@ -8,7 +8,6 @@ const trainingSchema = new Schema(
     coachID: { type: Schema.Types.ObjectId, ref: 'Coach' },
     programID: { type: Schema.Types.ObjectId, ref: 'Program' },
     scheduleID: { type: Schema.Types.ObjectId, ref: 'Schedule' },
-    blockID: [{ type: Schema.Types.ObjectId, ref: 'Block' }],
     exercises: [{ type: Schema.Types.ObjectId, ref: 'Exercise'}],
     title: String,
     note: String,
