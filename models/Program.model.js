@@ -16,7 +16,11 @@ const programSchema = new Schema({
   initialDay: {
     type: Date,
     default: Date.now
-  }
+  },
+  timeTables: [{
+    weekDay: Number,
+    Hour: Date
+  }]
 }, {
   timestamps: {
     createdAt: 'created_at',

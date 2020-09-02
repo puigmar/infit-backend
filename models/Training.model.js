@@ -3,11 +3,10 @@ const Schema = mongoose.Schema;
 
 const trainingSchema = new Schema(
   {
-    date: { type: Date, default: Date.now() },
+    date: String, // 2013-02-08 09:30
     clientID: { type: Schema.Types.ObjectId, ref: 'Client' },
     coachID: { type: Schema.Types.ObjectId, ref: 'Coach' },
     programID: { type: Schema.Types.ObjectId, ref: 'Program' },
-    scheduleID: { type: Schema.Types.ObjectId, ref: 'Schedule' },
     exercises: [{ type: Schema.Types.ObjectId, ref: 'Exercise'}],
     title: String,
     note: String,
