@@ -19,11 +19,13 @@
     "express-session": "^1.16.1",
     "firacode": "^5.2.0",
     "http-errors": "^1.7.2",
+    "moments": "0.0.2",
     "mongoose": "^5.5.9",
     "morgan": "~1.9.1",
     "multer": "^1.4.2",
     "multer-storage-cloudinary": "^2.2.1",
     "node-gyp": "^4.0.0",
+    "react-selectlist": "^3.0.6",
     "socket.io": "^2.3.0",
     "uuid": "^8.3.0"
   },

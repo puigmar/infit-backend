@@ -41,7 +41,7 @@ router.post(
           console.log('este es el nuevo usuario', newUser)
           const newCoach = await Coach.create({
             ...client,
-            coachID: newUser._id,
+            userID: newUser._id,
           });
           
           req.session.currentUser = newCoach;

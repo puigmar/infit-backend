@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const clientSchema = new Schema(
   {
-    clientID: { type: Schema.Types.ObjectId, ref: 'User' },
+    userID: { type: Schema.Types.ObjectId, ref: 'User' },
     coachID: { type: Schema.Types.ObjectId, ref: 'Coach' },
     savePhoto: {
       type: Boolean,
