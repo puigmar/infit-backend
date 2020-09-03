@@ -137,7 +137,6 @@ router.post('/clientID/:clientID', async (req, res, next) => {
   }
 });
 
-
 router.post('/coach/:id', async (req, res, next) => {
   try {
     const { id } = req.params;

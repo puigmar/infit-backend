@@ -21,6 +21,6 @@ const scheduleDaySchema = new Schema(
   }
 );
 
-const ScheduleDay = mongoose.model('ScheduleDay', scheduleSchema);
+const ScheduleDay = mongoose.model('ScheduleDay', scheduleDaySchema);
 
-module.exports = Schedule;
+module.exports = ScheduleDay;
