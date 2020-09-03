@@ -1,9 +1,11 @@
 const express = require('express');
+const moment = require('moment');
 const router = express.Router();
 const Training = require('../models/Training.model');
 const Coach = require('../models/Coach.model');
 const Client = require('../models/Client.model');
 const Program = require('../models/Program.model');
+const ScheduleDay = require('../models/ScheduleDay.model')
 
 const uploadCloud = require('../configs/cloudinary-setup');
 
@@ -11,16 +13,50 @@ const uploadCloud = require('../configs/cloudinary-setup');
 router.post('/newTraining', async (req, res, next) => {
   try {
     const newTraining = await Training.create({ ...req.body });
+    console.log('req.body ------->', req.body);
 
     if (newTraining) {
 
+      // add to scheduleDay
+      const trainingDate = moment(req.body.date);
+      const trainingHour = trainingDate.format('H');
+      const trainingDay = trainingDate.format('YYYY-MM-DD');
+      console.log('trainingDate ------>', trainingDate)
+      console.log('trainingHour ------>', trainingHour)
+      console.log('trainingDay ------>', trainingDay)
+
+      const existDay = await ScheduleDay.find({date: trainingDay})
+      console.log('exisDay -------> ', existDay.length)
+      if(existDay.length === 0){
+        const newSchedule = await ScheduleDay.create({
+          coachID: req.body.coachID,
+          trainingID: newTraining._id,
+          date: trainingDay,
+          occupedAt: trainingHour
+        })
+        console.log('newSchedule -------> ', newSchedule)
+      } else{
+        const existOccupedHour = await ScheduleDay.find({date: trainingDay, ocuppedAt: {$in: [trainingHour]}})
+        console.log('existOccupedHour -------> ', existOccupedHour)
+        if(existOccupedHour.length === 0){
+          console.log('no existe scheduleDAy!!')
+          const updateSchedule = await ScheduleDay.updateOne(
+            {date: trainingDay},
+            { $push: { occupedAt: trainingHour } },
+            { new: true }
+          )
+          console.log('updateSchedule -------> ', updateSchedule)
+        }
+      }
+
       // add training to Program
-      await Program.updateOne(
+      const updateProgram = await Program.updateOne(
         { _id: newTraining.programID },
-        { $push: { trainings: newTraining._id } },
+        { $push: { trainingIDs: newTraining._id } },
         { new: true }
       );
 
+      console.log('updateProgram -------> ', updateProgram)
 
     }
 

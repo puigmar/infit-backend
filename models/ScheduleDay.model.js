@@ -4,9 +4,9 @@ const Schema = mongoose.Schema;
 const scheduleDaySchema = new Schema(
   {
     coachID: { type: Schema.Types.ObjectId, ref: 'Coach' },
-    trainingID: [{ type: Schema.Types.ObjectId, ref: 'Session' }],
+    trainingID: [{ type: Schema.Types.ObjectId, ref: 'Training' }],
     meetingID: [{ type: Schema.Types.ObjectId, ref: 'Meeting' }],
-    date: String, // 2013-02-08
+    date: Date, // 2013-02-08
     occupedAt: [Number],
   },
   {
@@ -17,6 +17,6 @@ const scheduleDaySchema = new Schema(
   }
 );
 
-const ScheduleDay = mongoose.model('ScheduleDay', scheduleSchema);
+const ScheduleDay = mongoose.model('ScheduleDay', scheduleDaySchema);
 
-module.exports = Schedule;
+module.exports = ScheduleDay;

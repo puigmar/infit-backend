@@ -18,6 +18,8 @@ const block = require('./routes/block.routes');
 const program = require('./routes/program.routes');
 const exercise = require('./routes/exercise.routes');
 const meeting = require('./routes/meeting.routes');
+const coaches = require('./routes/coaches.routes');
+const scheduleDay = require('./routes/scheduleDay.routes');
 
 // MONGOOSE CONNECTION
 mongoose
@@ -72,6 +74,8 @@ app.use('/block', block);
 app.use('/generic/auth', generic);
 app.use('/client/auth', client);
 app.use('/coach/auth', coach);
+app.use('/coaches', coaches);
+app.use('/scheduleDay', scheduleDay);
 
 // ERROR HANDLING
 // catch 404 and forward to error handler

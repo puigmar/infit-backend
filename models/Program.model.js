@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const programSchema = new Schema({
-  trainingID: [ { type: Schema.Types.ObjectId, ref: "Training" }],
+  trainingIDs: [ { type: Schema.Types.ObjectId, ref: "Training" }],
   clientID: { type: Schema.Types.ObjectId, ref: "Client" },
   coachID: { type: Schema.Types.ObjectId, ref: "Coach" },
   picture: String,
@@ -10,8 +10,7 @@ const programSchema = new Schema({
   pack: {
     name: String,
     duration: Number,
-    price: Number,
-    weekSessions: Number
+    price: Number
   },
   initialDay: {
     type: Date,
@@ -19,7 +18,7 @@ const programSchema = new Schema({
   },
   timeTables: [{
     weekDay: Number,
-    Hour: Date
+    hour: Number
   }]
 }, {
   timestamps: {
