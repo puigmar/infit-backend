@@ -25,23 +25,23 @@ router.post('/newTraining', async (req, res, next) => {
       console.log('trainingHour ------>', trainingHour)
       console.log('trainingDay ------>', trainingDay)
 
-      const existDay = await ScheduleDay.find({date: trainingDay})
-      console.log('exisDay -------> ', existDay.length)
+      const existDay = await ScheduleDay.find({date: trainingDay, coachID: newTraining.coachID})
+      console.log('existDay -------> ', existDay.length)
       if(existDay.length === 0){
         const newSchedule = await ScheduleDay.create({
           coachID: req.body.coachID,
-          trainingID: newTraining._id,
+          trainingIDs: newTraining._id,
           date: trainingDay,
           occupedAt: trainingHour
         })
         console.log('newSchedule -------> ', newSchedule)
       } else{
-        const existOccupedHour = await ScheduleDay.find({date: trainingDay, ocuppedAt: {$in: [trainingHour]}})
+        const existOccupedHour = await ScheduleDay.find({date: trainingDay, coachID: newTraining.coachID, ocuppedAt: {$in: [trainingHour]}})
         console.log('existOccupedHour -------> ', existOccupedHour)
         if(existOccupedHour.length === 0){
           console.log('no existe scheduleDAy!!')
           const updateSchedule = await ScheduleDay.updateOne(
-            {date: trainingDay},
+            { date: trainingDay },
             { $push: { occupedAt: trainingHour } },
             { new: true }
           )

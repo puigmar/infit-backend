@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const meetingSchema = new Schema({
   //scheduleDayID: { type: Schema.Types.ObjectId, ref: "ScheduleDay" },
-  clientID: { type: Schema.Types.ObjectId, ref: "User" },
+  userID: { type: Schema.Types.ObjectId, ref: "User" },
   coachID: { type: Schema.Types.ObjectId, ref: "Coach", default: null },
   programID: { type: Schema.Types.ObjectId, ref: "Program" },
   roomID: String,

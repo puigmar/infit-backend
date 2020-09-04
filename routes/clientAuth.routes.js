@@ -6,6 +6,7 @@ const saltRounds = 10;
 const User = require('../models/User.model.js');
 const Client = require('../models/Client.model.js');
 const Program = require('../models/Program.model.js');
+const Meeting = require('../models/Meeting.model.js');
 const session = require('express-session');
 
 // HELPER FUNCTIONS
@@ -60,6 +61,15 @@ router.post(
             console.log('NEW USER: --------->', newUser);
 
             if (newProgram) {
+              const newMeeting = await Meeting.create({
+                userID: newUser._id,
+                programID: newProgram._id,
+                roomId: '',
+                url: ''
+              });
+
+              console.log('NEW MEETING: --------->', newMeeting);
+              
               res.status(200).json(newUser);
             }
           }
