@@ -67,14 +67,18 @@ router.post('/byCallAvailability', async (req, res, next) => {
         // si la key del día ya existe hacemos un push a ese día
         // de lo contrario generamos la nueva key con la info
         if(!calendar[calendarDay]){
-          calendar[calendarDay] = [coachInfo]
+          calendar[calendarDay] = coachInfo
         } else {
-          calendar[calendarDay].push(coachInfo)
+          // comprobamos cual tiene más horas libres
+          if(calendar[calendarDay].horario_libre.length < coachInfo.horario_libre){
+            calendar[calendarDay] = coachInfo;
+          }
+          //calendar[calendarDay].push(coachInfo)
         }
       })
     }
 
-    console.log('calendar: ', calendar)
+    //console.log('calendar: ', calendar)
 
     res.status(200).json(calendar);
 
