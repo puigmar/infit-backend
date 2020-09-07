@@ -104,7 +104,7 @@ router.post('/user/:id', async (req, res, next) => {
 router.post('/:coachID', async (req, res, next) => {
   try {
     const { coachID } = req.params;
-    const coach = await Coach.findOne({ coachID });
+    const coach = await Coach.findOne({ userID: coachID });
     res.status(200).json(coach);
   } catch (error) {
     console.log(error);

@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 const trainingSchema = new Schema(
   {
     date: String, // 2013-02-08 09:30
-    clientID: { type: Schema.Types.ObjectId, ref: 'Client' },
-    coachID: { type: Schema.Types.ObjectId, ref: 'Coach' },
+    clientID: { type: Schema.Types.ObjectId, ref: 'User' },
+    coachID: { type: Schema.Types.ObjectId, ref: 'User' },
     programID: { type: Schema.Types.ObjectId, ref: 'Program' },
     exercises: [{ type: Schema.Types.ObjectId, ref: 'Exercise'}],
     title: String,
