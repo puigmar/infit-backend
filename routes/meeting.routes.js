@@ -37,6 +37,7 @@ router.put('/update', async (req, res, next) => {
       { $set: { ...meeting } },
       {new: true}
     )
+    
     console.log('updateMeeting ------------------->', updateMeeting)
 
     if(updateMeeting){
