@@ -19,19 +19,6 @@ router.post('/byAvailability', async (req, res, next) => {
 });
 
 
-// let calendar = {
-//   "2020-09-07": [
-//     { 
-//       id: "342342342342", 
-//       horario_libre: [9,10,12]
-//     },
-//     { 
-//       id: "342342342342", 
-//       horario_libre: [9,11,14]
-//     }
-//   ]
-// };
-
 router.post('/byCallAvailability', async (req, res, next) => {
   try {
     // Recogemos coaches que coinciden conla franja horaria
@@ -51,7 +38,7 @@ router.post('/byCallAvailability', async (req, res, next) => {
         let calendarDay = moment(theCoach.date).format('YYYY-MM-DD'); 
 
         // Sacamos horas libres
-        let hoursAvailables = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+        let hoursAvailables = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
         let busyHours = theCoach.occupedAt;
         hoursAvailables.map( (hour, index) => {
           busyHours.includes(hour) && hoursAvailables.splice(index, 1);
@@ -67,12 +54,14 @@ router.post('/byCallAvailability', async (req, res, next) => {
         // si la key del día ya existe hacemos un push a ese día
         // de lo contrario generamos la nueva key con la info
         if(!calendar[calendarDay]){
-          calendar[calendarDay] = coachInfo
+          calendar[calendarDay] = [coachInfo]
         } else {
-          // comprobamos cual tiene más horas libres
-          if(calendar[calendarDay].horario_libre.length < coachInfo.horario_libre){
-            calendar[calendarDay] = coachInfo;
-          }
+          calendar[calendarDay].push(coachInfo)
+          // // comprobamos cual tiene más horas libres
+          // if(calendar[calendarDay].horario_libre.length < coachInfo.horario_libre){
+          //   //calendar[calendarDay] = coachInfo;
+          //   calendar[calendarDay].push(coachInfo)
+          // }
           //calendar[calendarDay].push(coachInfo)
         }
       })

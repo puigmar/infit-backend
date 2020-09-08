@@ -22,7 +22,7 @@ router.post(
   validationLoggin(),
   async (req, res, next) => {
     const { username, password, client } = req.body;
-    console.log('client: ------->: ', client)
+    // console.log('client: ------->: ', client)
     try {
       const usernameExists = await User.findOne({ username }, 'username');
 
@@ -38,7 +38,7 @@ router.post(
 
         if (newUser) {
           req.session.currentUser = newUser;
-          console.log('user._id---------->', newUser._id)
+          // console.log('user._id---------->', newUser._id)
           const newClient = await Client.create({
             ...client,
             userID: newUser._id,
@@ -56,9 +56,9 @@ router.post(
               ...newClient,
             };
 
-            console.log('NEW PROGRAM: --------->', newProgram);
-            console.log('NEW CLIENT: --------->', newClient);
-            console.log('NEW USER: --------->', newUser);
+            //console.log('NEW PROGRAM: --------->', newProgram);
+            //console.log('NEW CLIENT: --------->', newClient);
+            //console.log('NEW USER: --------->', newUser);
 
             if (newProgram) {
               const newMeeting = await Meeting.create({
@@ -68,7 +68,7 @@ router.post(
                 url: ''
               });
 
-              console.log('NEW MEETING: --------->', newMeeting);
+              //console.log('NEW MEETING: --------->', newMeeting);
               
               res.status(200).json(newUser);
             }
@@ -109,7 +109,7 @@ router.post('/login', async (req, res, next) => {
 
 router.post('/logout', isLoggedIn(), (req, res, next) => {
   req.session.destroy();
-  console.log('session --------->: ', req.session);
+  //console.log('session --------->: ', req.session);
   res.status(204).send();
   return;
 });
@@ -129,9 +129,9 @@ router.post('/user/:id', async (req, res, next) => {
 router.post('/id/:clientID', async (req, res, next) => {
   try {
     const { clientID } = req.params;
-    console.log('clientID: ----->', clientID)
+    //console.log('clientID: ----->', clientID)
     const client = await Client.findOne({ _id: clientID });
-    console.log('client: ----->', client)
+    //console.log('client: ----->', client)
     res.status(200).json(client);
   } catch (error) {
     console.log(error);
@@ -141,22 +141,21 @@ router.post('/id/:clientID', async (req, res, next) => {
 router.get('/clientID/:clientID', async (req, res, next) => {
   try {
     const { clientID } = req.params;
-    console.log('userID--------->:', clientID)
+    //console.log('userID--------->:', clientID)
     const client = await Client.findOne({ userID: clientID });
-    console.log('clientID: ----->', client)
+    //console.log('clientID: ----->', client)
     res.status(200).json(client);
   } catch (error) {
     console.log(error);
   }
 });
 
-
 router.post('/coach/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log('coach: ', id);
+    //console.log('coach: ', id);
     const clients = await Client.find({ coachID: id });
-    console.log(clients);
+    //console.log(clients);
     res.status(200).json([...clients]);
   } catch (error) {
     console.log(error);

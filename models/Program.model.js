@@ -13,8 +13,7 @@ const programSchema = new Schema({
     price: Number
   },
   initialDay: {
-    type: Date,
-    default: Date.now
+    type: Date
   },
   timeTables: [{
     weekDay: Number,

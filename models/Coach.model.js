@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 const coachSchema = new Schema(
   {
     userID: { type: Schema.Types.ObjectId, ref: 'User' },
-    clientsIds: [{ type: Schema.Types.ObjectId, ref: 'Client' }],
     avatarUrl: String,
     name: String,
     surname: String,

@@ -73,10 +73,11 @@ router.get('/:clientID/:coachID', async (req, res, next) => {
   } catch (error) {}
 });
 
-router.post('/inactive/:clientID', async (req, res, next) => {
+router.post('/:userID', async (req, res, next) => {
   try {
-    const { clientID } = req.params;
-    const program = await Program.find({ clientID});
+    const { userID } = req.params;
+    const program = await Program.find({ clientID: userID});
+    console.log('program------------------>', program)
     res.status(200).json(program);
   } catch (error) {}
 });
