@@ -3,6 +3,8 @@ const moment = require('moment');
 const router = express.Router();
 const Meeting = require('../models/Meeting.model');
 const ScheduleDay = require('../models/ScheduleDay.model');
+const Coach = require('../models/Coach.model');
+const Client = require('../models/Client.model');
 
 //CREATE
 router.post('/newMeeting', async (req, res, next) => {
@@ -26,6 +28,27 @@ router.post('/next', async (req, res, next) => {
     res.status(200).json(meeting);
   } catch (error) {}
 });
+
+router.post('/coach/:coachID/next', async (req, res, next) => {
+  try {
+    const { coachID } = req.params;
+    console.log(coachID)
+    const now = Date.now();
+    const findCoach = await Coach.findOne({ userID: coachID});
+    console.log('findCoach ------------->', findCoach)
+    const meeting = await Meeting.find({ coachID: findCoach._id, finished: { $ne: true}, date: { $gte: now}})
+    const user = await Client.findOne({ userId: meeting.userID}, {'name': 1, 'avatarUrl': 1})
+
+    console.log('meeting ------------->', meeting)
+
+    //console.log('Next meeting --------->', meeting)
+    res.status(200).json({
+      meeting,
+      user
+    });
+  } catch (error) {}
+});
+
 
 router.put('/update', async (req, res, next) => {
   try {

@@ -142,4 +142,50 @@ router.post('/client/:clientID', async (req, res, next) => {
   }
 });
 
+//get trianings by clientID
+router.post('/next/coach/:coachID', async (req, res, next) => {
+  try {
+    const { coachID } = req.params;
+    let now = new Date();
+    const findCoach = await Coach.findOne({ userID: coachID }, {'name': 1, 'avatarUrl': 1});
+    console.log('Find coach ID: ------>', findCoach);
+    
+    if(findCoach){
+      const nextTraining = await Training.findOne({ coachID: findCoach._id, date: { $gte: now }})
+                                         .populate('programID', 'objective')
+      
+      const findClient = await Client.findOne({userID: nextTraining.clientID}, {'name':1, 'avatarUrl': 1})
+
+      res.json({
+        nextTraining,
+        user: findClient
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+router.post('/next/client/:clientID', async (req, res, next) => {
+  try {
+    const { clientID } = req.params;
+    let now = new Date();
+    const findClient = await Client.findOne({ userID: clientID }, {'name': 1, 'avatarUrl': 1});
+    console.log('Find client ID: ------>', findClient);
+    
+    if(findClient){
+      const nextTraining = await Training.findOne({ coachID: findClient._id, date: { $gte: now }})
+                                         .populate('programID')
+      res.json({
+        nextTraining,
+        user: findClient
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
 module.exports = router;
