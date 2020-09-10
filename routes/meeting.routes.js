@@ -21,8 +21,9 @@ router.post('/newMeeting', async (req, res, next) => {
 router.post('/next', async (req, res, next) => {
   try {
     const { clientID, programID } = req.body;
-    //console.log(req.body)
-    const meeting = await Meeting.find({ clientID , programID, finished: { $ne: true}})
+    
+    const now = Date.now();
+    const meeting = await Meeting.find({ clientID , programID, finished: { $ne: true}, date: { $gte: now}})
                                  .populate('coachID', 'name avatarUrl')
     //console.log('Next meeting --------->', meeting)
     res.status(200).json(meeting);
