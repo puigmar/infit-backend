@@ -23,10 +23,40 @@ router.post('/next', async (req, res, next) => {
     const { clientID, programID } = req.body;
     
     const now = Date.now();
-    const meeting = await Meeting.find({ clientID , programID, finished: { $ne: true}, date: { $gte: now}})
+    const meeting = await Meeting.findOne({ clientID , programID, finished: { $ne: true}})
                                  .populate('coachID', 'name avatarUrl')
-    //console.log('Next meeting --------->', meeting)
-    res.status(200).json(meeting);
+
+    // chequear si la meeting ha pasado de hora y no se ha realizado
+    let parseDBDate = moment.duration(new Date(meeting.date));
+    let adding1hour = moment.duration(parseDBDate).add(1, 'hours');
+    let finishMeetingTime = adding1hour.asMilliseconds()
+
+    if(finishMeetingTime < now && meeting.finished === false){
+      console.log('--------------------------------> tenemos que volver a generar una cita')
+      //const meetingObj = meeting.toObject();
+
+      const updateExistingMeeting = await Meeting.findOneAndUpdate(
+        {_id: meeting._id},
+        { $set: { 
+            coachID: null, 
+            userID: meeting.userID,
+            finished: false,
+            programID: meeting.programID,
+            url: ""
+          },
+          $unset: { date: 1}
+        },
+        {
+          upsert: true,
+          new: true
+        }
+      )
+      console.log('updateExistingMeeting ---------------> ', updateExistingMeeting)
+      res.status(200).json(updateExistingMeeting); 
+    }
+
+    res.status(200).json(meeting); 
+    
   } catch (error) {}
 });
 

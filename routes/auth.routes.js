@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User.model');
+const Client = require('../models/Client.model')
+const Coach = require('../models/Coach.model')
+
 
 const uploader = require('../configs/cloudinary-setup');
 
@@ -14,6 +17,26 @@ router.post('/checkExistUser', async (req, res, next) => {
     const isUser = await User.findOne({ username: username });
     console.log(isUser);
     res.json(isUser);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.post('/getUser', async (req, res, next) => {
+  try {
+    const { _id } = req.body;
+    console.log(_id);
+    const user = await User.findOne({ _id });
+    console.log(user);
+
+    let userInfo;
+    if(user.isCoach){
+      userInfo = await Coach.findOne({ _id})
+    } else {
+      userInfo = await Client.findOne({ _id})
+    }
+
+    res.json(userInfo);
   } catch (error) {
     console.log(error);
   }
