@@ -7,7 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('boilerplate-codealong-server-starter-code:server');
 var http = require('http');
-var socketio = require('socket.io');
+var io = require('socket.io');
 
 /**
  * Get port from environment and store in Express.
@@ -24,32 +24,62 @@ var server = http.createServer(app);
 
 var allowedOrigins = "http://localhost:* http://127.0.0.1:*";
 
-var io = socketio(server, {
+var socket = io(server, {
   origins: allowedOrigins,
   transport: ['websocket']
 });
 
 let room;
+let usersConnected = []
 
-io.on('connection', (socket) => {
+socket.on('connection', (socket) => {
   console.log('Client connected...');
 
   socket.on('connectToRoom', data => {
-    const { roomID } = data;
+    const { roomID, userID, isCoach } = data;
     socket.join(roomID);
+
+    const existUser = usersConnected.find( ( user, index ) => { 
+      if(user.userID === userID) {
+        usersConnected[index].socketID = socket.id;
+      }
+      return user.userID === userID 
+    })
+
+    !existUser && 
+    usersConnected.push({
+      userID,
+      isCoach,
+      socketID: socket.id
+    })
+    
+    console.log('usuarios conectados: ', usersConnected)
     socket.broadcast.to(roomID).emit('joinedToRoom');
     room = roomID
   })
+  
+  socket.on('checkForOtherUser', data => {
+
+    const { userID } = data;
+
+    const existOther = usersConnected.find( user => user.userID !== userID) 
+
+    socket.broadcast.to(room).emit('startMeeting', existOther )
+    
+  })
 
   socket.on('sendProgramData', data => {
-    console.log('programData: ', data)
-    console.log('room ------>', room)
     socket.broadcast.to(room).emit('receiveProgramData', data);
   })
 
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    usersConnected.map( (user, index) => {
+      if(user.socketID = socket.id){
+        usersConnected.slice(index, 1)
+      }
+    })
   });
+
 });
 
 
