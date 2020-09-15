@@ -99,7 +99,7 @@ router.post('/login', async (req, res, next) => {
       res.status(200).json(user);
       return;
     } else {
-      console.log('no te estoy autorizando porque me sale del nispero');
+      //console.log('no te estoy autorizando porque me sale del nispero');
       next(createError(401));
     }
   } catch (error) {

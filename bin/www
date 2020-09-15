@@ -7,8 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('boilerplate-codealong-server-starter-code:server');
 var http = require('http');
-const socketIo = require("socket.io");
-
+var socketio = require('socket.io');
 
 /**
  * Get port from environment and store in Express.
@@ -23,62 +22,36 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
-const io = socketIo(server);
+var allowedOrigins = "http://localhost:* http://127.0.0.1:*";
 
-let interval;
+var io = socketio(server, {
+  origins: allowedOrigins,
+  transport: ['websocket']
+});
 
-let trainnerConnected = [];
+let room;
 
-io.on("connection", (socket) => {
-  //console.log("New client connected");
+io.on('connection', (socket) => {
+  console.log('Client connected...');
 
-  socket.on("petition", data => {
-    const {clientId, trainnerId } = data;
-    const petitionRoom = `${clientId+trainnerId}`;
-    socket.join(petitionRoom);
-    //console.log('id coach --->', trainnerId);
-
-    const trainner = trainnerConnected.find( trainner => trainner.id === trainnerId );
-    //console.log('--->', trainner);
-
-    if(trainner){
-      let coachRoom = `room-${trainner.id}`;
-      io.in(coachRoom).emit('checkPetitions', {client: data.client , petitionRoom});
-    }
-
-  });
-
-  socket.on("checkAnswersPetitions", data => {
-      socket.join(data.room)
-      io.in(data.room).emit('handleMessageIncoming', {message: data.message});
-  });
-  
-  socket.on("clientConnected" , () => {
-    console.log('trainnerConnected - from user: ', trainnerConnected)
+  socket.on('connectToRoom', data => {
+    const { roomID } = data;
+    socket.join(roomID);
+    socket.broadcast.to(roomID).emit('joinedToRoom');
+    room = roomID
   })
 
-  socket.on('registerSocketID', data => {
-    trainnerConnected.push(data)
-    console.log('trainnerConnected: ', trainnerConnected)
-    console.log('room creada: ', `room-${data.id}`)
-    socket.join(`room-${data.id}`)
-  })
-
-  socket.on('addCoachToRoom', data => {
-    socket.join(`room-${data.id}`)
+  socket.on('sendProgramData', data => {
+    console.log('programData: ', data)
+    console.log('room ------>', room)
+    socket.broadcast.to(room).emit('receiveProgramData', data);
   })
 
   socket.on('disconnect', () => {
-
-    trainnerConnected.map( (trainner, index) => {
-      if(trainner.socketID === socket.id){
-        trainnerConnected.splice(index, 1);
-      }
-    });
-
-  })
-
+    console.log('user disconnected');
+  });
 });
+
 
 
 /**

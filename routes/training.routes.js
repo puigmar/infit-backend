@@ -146,20 +146,25 @@ router.post('/client/:clientID', async (req, res, next) => {
 router.post('/next/coach/:coachID', async (req, res, next) => {
   try {
     const { coachID } = req.params;
+    console.log('COACHID next training: ', coachID)
     let now = new Date();
-    const findCoach = await Coach.findOne({ userID: coachID }, {'name': 1, 'avatarUrl': 1});
+    const findCoach = await Coach.findOne({ _id: coachID }, {'name': 1, 'avatarUrl': 1});
     console.log('Find coach ID: ------>', findCoach);
     
     if(findCoach){
       const nextTraining = await Training.findOne({ coachID: findCoach._id, date: { $gte: now }})
                                          .populate('programID', 'objective')
       
-      const findClient = await Client.findOne({userID: nextTraining.clientID}, {'name':1, 'avatarUrl': 1})
+      console.log('Find nextTraining: ------>', nextTraining);
+      if(nextTraining){
+        const findClient = await Client.findOne({userID: nextTraining.clientID}, {'name':1, 'avatarUrl': 1})
 
-      res.json({
-        nextTraining,
-        user: findClient
-      });
+        res.json({
+          nextTraining,
+          user: findClient
+        });
+      }
+      
     }
   } catch (error) {
     console.log(error);

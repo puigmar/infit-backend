@@ -24,16 +24,18 @@ router.post('/checkExistUser', async (req, res, next) => {
 
 router.post('/getUser', async (req, res, next) => {
   try {
-    const { _id } = req.body;
-    console.log(_id);
-    const user = await User.findOne({ _id });
-    console.log(user);
+    const { userID } = req.body;
+    //console.log(userID);
+    const user = await User.findOne({ _id: userID });
+    //console.log('result user: ', user);
 
     let userInfo;
     if(user.isCoach){
-      userInfo = await Coach.findOne({ _id})
+      userInfo = await Coach.findOne({ userID})
+                            .populate('userID', 'isCoach')
     } else {
-      userInfo = await Client.findOne({ _id})
+      userInfo = await Client.findOne({ userID})
+                             .populate('userID', 'isCoach')
     }
 
     res.json(userInfo);

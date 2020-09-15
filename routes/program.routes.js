@@ -52,6 +52,18 @@ router.post('/delete/:id', async (req, res, next) => {
   }
 });
 
+router.get('/getProgram/:programID', async (req, res, next) => {
+  try {
+    const { programID } = req.params;
+    //console.log(programID)
+    const program = await Program.findById({ _id: programID});
+    //console.log('program------------------>', program)
+    res.status(200).json(program);
+  } catch (error) {
+    next(error)
+  }
+});
+
 //CALLS
 //get program by coachID
 router.get('/coach/:coachID', async (req, res, next) => {
@@ -79,7 +91,9 @@ router.post('/:userID', async (req, res, next) => {
     const program = await Program.find({ clientID: userID});
     console.log('program------------------>', program)
     res.status(200).json(program);
-  } catch (error) {}
+  } catch (error) {
+    next(error)
+  }
 });
 
 module.exports = router;

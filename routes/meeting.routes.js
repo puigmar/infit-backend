@@ -18,6 +18,18 @@ router.post('/newMeeting', async (req, res, next) => {
   }
 });
 
+router.get('/:meetingID', async (req, res, next) => {
+  try{
+    const { meetingID } = req.params;
+    const theMeeting = await Meeting.findById({_id: meetingID})
+    res.status(200).json(theMeeting);
+  }
+  catch(err) {
+    console.log(err)
+    next(error);
+  }
+});
+
 router.post('/next', async (req, res, next) => {
   try {
     const { clientID, programID } = req.body;
@@ -57,27 +69,36 @@ router.post('/next', async (req, res, next) => {
 
     res.status(200).json(meeting); 
     
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.post('/coach/:coachID/next', async (req, res, next) => {
   try {
     const { coachID } = req.params;
     console.log(coachID)
-    const now = Date.now();
-    const findCoach = await Coach.findOne({ userID: coachID});
+    const now = new Date();
+    const findCoach = await Coach.findOne({ _id: coachID});
     console.log('findCoach ------------->', findCoach)
-    const meeting = await Meeting.find({ coachID: findCoach._id, finished: { $ne: true}, date: { $gte: now}})
-    const user = await Client.findOne({ userId: meeting.userID}, {'name': 1, 'avatarUrl': 1})
-
+    console.log('findCoach: ', findCoach._id)
+    const meeting = await Meeting.findOne({ coachID: findCoach._id, finished: false, date: { $gte: now.toISOString()}})
     console.log('meeting ------------->', meeting)
+    if(meeting){
+      const user = await Client.findOne({ userID: meeting.userID}, {'name': 1, 'avatarUrl': 1})
+      console.log('user ------------->', user)
 
-    //console.log('Next meeting --------->', meeting)
-    res.status(200).json({
-      meeting,
-      user
-    });
-  } catch (error) {}
+      if(user) {
+        res.status(200).json({
+          meeting,
+          user
+        });
+      }
+    }
+    
+  } catch (error) {
+    next(error);
+  }
 });
 
 
@@ -130,7 +151,9 @@ router.put('/update', async (req, res, next) => {
 
     res.status(200).json(updateMeeting);
 
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
