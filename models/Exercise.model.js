@@ -12,6 +12,8 @@ const exerciseSchema = new Schema(
       minute: Number,
       second: Number,
     },
+    series: {type: Number, default: 0},
+    repetition: {type: Number, default: 0},
   },
   {
     timestamps: {
